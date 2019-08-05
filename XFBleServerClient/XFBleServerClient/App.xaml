@@ -46,6 +46,17 @@
                 <Setter Property="HorizontalTextAlignment" Value="Center" />
                 <Setter Property="VerticalTextAlignment" Value="Center" />
             </Style>
+
+            <Style x:Key="FabButtonStyle"
+                   TargetType="Button">
+                <Setter Property="FontSize" Value="24" />
+                <Setter Property="BorderRadius" Value="28" />
+                <Setter Property="HeightRequest" Value="56" />
+                <Setter Property="WidthRequest" Value="56" />
+                <Setter Property="BackgroundColor" Value="{StaticResource Color.PrimaryBlue}" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
         </ResourceDictionary>
     </prism:PrismApplication.Resources>
 </prism:PrismApplication>
