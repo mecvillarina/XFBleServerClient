@@ -20,6 +20,28 @@
       <string>UIInterfaceOrientationLandscapeLeft</string>
       <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
+    <key>UIAppFonts</key>
+    <array>
+      <string>iconize-material.ttf</string>
+      <string>Fonts/Raleway-Black.ttf</string>
+      <string>Fonts/Raleway-BlackItalic.ttf</string>
+      <string>Fonts/Raleway-Bold.ttf</string>
+      <string>Fonts/Raleway-BoldItalic.ttf</string>
+      <string>Fonts/Raleway-ExtraBold.ttf</string>
+      <string>Fonts/Raleway-ExtraBoldItalic.ttf</string>
+      <string>Fonts/Raleway-ExtraLight.ttf</string>
+      <string>Fonts/Raleway-ExtraLightItalic.ttf</string>
+      <string>Fonts/Raleway-Light.ttf</string>
+      <string>Fonts/Raleway-LightItalic.ttf</string>
+      <string>Fonts/Raleway-Medium.ttf</string>
+      <string>Fonts/Raleway-MediumItalic.ttf</string>
+      <string>Fonts/Raleway-Regular.ttf</string>
+      <string>Fonts/Raleway-RegularItalic.ttf</string>
+      <string>Fonts/Raleway-SemiBold.ttf</string>
+      <string>Fonts/Raleway-SemiBoldItalic.ttf</string>
+      <string>Fonts/Raleway-Thin.ttf</string>
+      <string>Fonts/Raleway-ThinItalic.ttf</string>
+    </array>
     <key>MinimumOSVersion</key>
     <string>8.0</string>
     <key>CFBundleDisplayName</key>

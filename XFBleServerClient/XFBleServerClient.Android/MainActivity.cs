@@ -2,6 +2,7 @@
 using Android.Content.PM;
 using Android.OS;
 using Prism.Ioc;
+using Xamarin.Forms;
 using XFBleServerClient.Core;
 using XFBleServerClient.Shared;
 
@@ -24,6 +25,8 @@ namespace XFBleServerClient.Droid
 			base.OnCreate(bundle);
 
 			global::Xamarin.Forms.Forms.Init(this, bundle);
+			FormsMaterial.Init(this, bundle);
+			Plugin.Iconize.Iconize.Init(Resource.Id.toolbar, Resource.Id.sliding_tabs);
 
 			ConfigureContainer();
 			LoadApplication(_coreApp);

@@ -1,6 +1,9 @@
 ﻿using Foundation;
+using Plugin.Iconize;
 using Prism.Ioc;
+using System.Linq;
 using UIKit;
+using Xamarin.Forms;
 using XFBleServerClient.Core;
 using XFBleServerClient.Shared;
 
@@ -16,6 +19,12 @@ namespace XFBleServerClient.iOS
 		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
 		{
 			global::Xamarin.Forms.Forms.Init();
+			FormsMaterial.Init();
+			AiForms.Effects.iOS.Effects.Init();
+
+			LoadFontIcons();
+
+			Iconize.Init();
 
 			ConfigureContainer();
 			LoadApplication(_coreApp);
@@ -29,6 +38,18 @@ namespace XFBleServerClient.iOS
 			var container = platformInitializer.Container;
 			RegisterContainer(container);
 			_coreApp = new App(platformInitializer);
+		}
+
+		private void LoadFontIcons()
+		{
+			foreach (var familyName in UIFont.FamilyNames.OrderBy(x => x))
+			{
+				System.Console.WriteLine($"Family: {familyName}");
+				foreach (var name in UIFont.FontNamesForFamilyName(familyName).OrderBy(y => y))
+				{
+					System.Console.WriteLine(name);
+				}
+			}
 		}
 
 		private void RegisterContainer(IContainerRegistry containerRegistry)

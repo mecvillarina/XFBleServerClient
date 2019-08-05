@@ -7,9 +7,9 @@ using Xamarin.Forms;
 
 namespace XFBleServerClient.Core.Views
 {
-	public partial class MainPage : ContentPage
+	public partial class LandingPage : ContentPageBase
 	{
-		public MainPage()
+		public LandingPage()
 		{
 			InitializeComponent();
 		}

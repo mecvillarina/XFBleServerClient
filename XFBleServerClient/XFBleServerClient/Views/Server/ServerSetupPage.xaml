@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentPageBase x:Class="XFBleServerClient.Core.Views.ServerSetupPage"
+                       xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
+                       xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+                       xmlns:views="clr-namespace:XFBleServerClient.Core.Views"
+                       prism:ViewModelLocator.AutowireViewModel="True">
+
+    <Grid BackgroundColor="{StaticResource Color.PageBackground}">
+        <Grid Padding="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Column="0"
+                       FontFamily="{StaticResource RalewayBoldFontFamily}"
+                       FontSize="24"
+                       HorizontalTextAlignment="Start"
+                       Text="GATT Server Setup"
+                       TextColor="Black" />
+
+                <StackLayout Grid.Column="1"
+                             HorizontalOptions="EndAndExpand"
+                             Orientation="Horizontal"
+                             Spacing="8">
+
+
+                    <iconize:IconLabel Style="{StaticResource IconLabelMaterialStyle}"
+                                       Margin="0"
+                                       FontSize="18"
+                                       HorizontalOptions="StartAndExpand"
+                                       Text="md-announcement"
+                                       TextColor="{StaticResource Color.PrimaryBlue}">
+                        <iconize:IconLabel.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectInfoCommand}" />
+                        </iconize:IconLabel.GestureRecognizers>
+                    </iconize:IconLabel>
+
+                    <iconize:IconLabel Style="{StaticResource IconLabelMaterialStyle}"
+                                       Margin="0"
+                                       FontSize="18"
+                                       HorizontalOptions="StartAndExpand"
+                                       Text="md-close"
+                                       TextColor="{StaticResource Color.PrimaryGray}">
+                        <iconize:IconLabel.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CloseCommand}" />
+                        </iconize:IconLabel.GestureRecognizers>
+                    </iconize:IconLabel>
+                </StackLayout>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <Label Grid.Column="0"
+                       FontFamily="{StaticResource RalewayMediumFontFamily}"
+                       FontSize="12"
+                       HorizontalTextAlignment="Start"
+                       Text="It receives requests from a client and sends responses back. "
+                       TextColor="{StaticResource Color.PrimaryGray}" />
+            </Grid>
+
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Label FontSize="16"
+                       HorizontalTextAlignment="Start"
+                       Text="Services"
+                       TextColor="Black" />
+            </Grid>
+
+
+        </Grid>
+    </Grid>
+</views:ContentPageBase>

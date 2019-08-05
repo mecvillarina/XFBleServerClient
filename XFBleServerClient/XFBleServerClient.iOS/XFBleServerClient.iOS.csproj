@@ -95,6 +95,24 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <ITunesArtwork Include="iTunesArtwork@1x.png" />
     <ITunesArtwork Include="iTunesArtwork@2x.png" />
+    <BundleResource Include="Resources\Fonts\Raleway-BoldItalic.ttf" />
+    <BundleResource Include="Resources\Fonts\Raleway-ExtraBold.ttf" />
+    <BundleResource Include="Resources\Fonts\Raleway-ExtraBoldItalic.ttf" />
+    <BundleResource Include="Resources\Fonts\Raleway-ExtraLight.ttf" />
+    <BundleResource Include="Resources\Fonts\Raleway-ExtraLightItalic.ttf" />
+    <BundleResource Include="Resources\Fonts\Raleway-Light.ttf" />
+    <BundleResource Include="Resources\Fonts\Raleway-LightItalic.ttf" />
+    <BundleResource Include="Resources\Fonts\Raleway-Medium.ttf" />
+    <BundleResource Include="Resources\Fonts\Raleway-MediumItalic.ttf" />
+    <BundleResource Include="Resources\Fonts\Raleway-Regular.ttf" />
+    <BundleResource Include="Resources\Fonts\Raleway-RegularItalic.ttf" />
+    <BundleResource Include="Resources\Fonts\Raleway-SemiBold.ttf" />
+    <BundleResource Include="Resources\Fonts\Raleway-SemiBoldItalic.ttf" />
+    <BundleResource Include="Resources\Fonts\Raleway-Thin.ttf" />
+    <BundleResource Include="Resources\Fonts\Raleway-ThinItalic.ttf" />
+    <BundleResource Include="Resources\Fonts\Raleway-Black.ttf" />
+    <BundleResource Include="Resources\Fonts\Raleway-BlackItalic.ttf" />
+    <BundleResource Include="Resources\Fonts\Raleway-Bold.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\Contents.json">
@@ -188,20 +206,35 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AiForms.Effects">
+      <Version>1.5.2</Version>
+    </PackageReference>
     <PackageReference Include="Plugin.BluetoothLE">
       <Version>6.2.6</Version>
     </PackageReference>
     <PackageReference Include="Plugin.Permissions">
       <Version>3.0.0.12</Version>
     </PackageReference>
+    <PackageReference Include="Xam.Plugin.Iconize">
+      <Version>3.5.0.129</Version>
+    </PackageReference>
+    <PackageReference Include="Xam.Plugin.Iconize.Material">
+      <Version>3.5.0.129</Version>
+    </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="4.1.0.618606" />
     <PackageReference Include="Prism.DryIoc.Forms" Version="7.2.0.1367" />
+    <PackageReference Include="Xamarin.Forms.Visual.Material">
+      <Version>4.1.0.618606</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XFBleServerClient\XFBleServerClient.Core.csproj">
       <Project>{A982CCF4-5810-4AB5-866B-84EB922248BF}</Project>
       <Name>XFBleServerClient.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\background_image.png" />
   </ItemGroup>
   <Import Project="..\..\XFBleServerClient.Shared\XFBleServerClient.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

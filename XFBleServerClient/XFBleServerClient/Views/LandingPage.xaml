@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentPageBase x:Class="XFBleServerClient.Core.Views.LandingPage"
+                       xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:common="clr-namespace:XFBleServerClient.Core.Common"
+                       xmlns:views="clr-namespace:XFBleServerClient.Core.Views">
+
+    <Grid>
+        <Image Aspect="AspectFill"
+               Source="background_image.png" />
+
+        <Grid Padding="16">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <StackLayout Grid.Row="1"
+                         Orientation="Vertical"
+                         Spacing="12">
+                <Label FontAttributes="Bold"
+                       FontSize="16"
+                       HorizontalTextAlignment="Center"
+                       Text="Connect as"
+                       TextColor="White" />
+
+                <Button BackgroundColor="{StaticResource Color.PrimaryBlue}"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="{x:Static common:AppConstants.Server}"
+                        Text="{x:Static common:AppConstants.Server}" />
+                <Button BackgroundColor="{StaticResource Color.PrimaryRed}"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="{x:Static common:AppConstants.Client}"
+                        Text="{x:Static common:AppConstants.Client}" />
+            </StackLayout>
+        </Grid>
+
+
+    </Grid>
+
+</views:ContentPageBase>

@@ -1,4 +1,5 @@
-﻿using Plugin.Permissions;
+﻿using Plugin.BluetoothLE;
+using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using Prism;
 using Prism.Ioc;
@@ -29,7 +30,10 @@ namespace XFBleServerClient.Shared
 		private void RegisterUI(IContainerRegistry container)
 		{
 			container.RegisterForNavigation<NavigationPage>();
-			container.RegisterForNavigation<MainPage, MainPageViewModel>();
+			container.RegisterForNavigation<LandingPage, LandingPageViewModel>();
+			container.RegisterForNavigation<ServerSetupPage, ServerSetupPageViewModel>();
+			container.RegisterDialog<DialogInfoPage, DialogInfoPageViewModel>();
+
 		}
 
 		private void RegisterFactories(IContainerRegistry container)
@@ -60,6 +64,7 @@ namespace XFBleServerClient.Shared
 		private void RegisterPlugins(IContainerRegistry container)
 		{
 			container.RegisterInstance<IPermissions>(CrossPermissions.Current);
+			container.RegisterInstance<IAdapter>(CrossBleAdapter.Current);
 		}
 	}
 }

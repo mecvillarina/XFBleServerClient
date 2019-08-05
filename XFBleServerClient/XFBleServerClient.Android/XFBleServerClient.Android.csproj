@@ -55,6 +55,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AiForms.Effects">
+      <Version>1.5.2</Version>
+    </PackageReference>
     <PackageReference Include="Plugin.BluetoothLE">
       <Version>6.2.6</Version>
     </PackageReference>
@@ -69,6 +72,12 @@
     </PackageReference>
     <PackageReference Include="System.Threading.Tasks.Extensions">
       <Version>4.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="Xam.Plugin.Iconize">
+      <Version>3.5.0.129</Version>
+    </PackageReference>
+    <PackageReference Include="Xam.Plugin.Iconize.Material">
+      <Version>3.5.0.129</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Android.Support.Annotations">
       <Version>28.0.0.1</Version>
@@ -107,6 +116,9 @@
     <PackageReference Include="Xamarin.Android.Support.v7.CardView" Version="28.0.0.1" />
     <PackageReference Include="Xamarin.Android.Support.v7.MediaRouter" Version="28.0.0.1" />
     <PackageReference Include="Prism.DryIoc.Forms" Version="7.2.0.1367" />
+    <PackageReference Include="Xamarin.Forms.Visual.Material">
+      <Version>4.1.0.618606</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
@@ -115,6 +127,24 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="Assets\Raleway-BoldItalic.ttf" />
+    <AndroidAsset Include="Assets\Raleway-ExtraBold.ttf" />
+    <AndroidAsset Include="Assets\Raleway-ExtraBoldItalic.ttf" />
+    <AndroidAsset Include="Assets\Raleway-ExtraLight.ttf" />
+    <AndroidAsset Include="Assets\Raleway-ExtraLightItalic.ttf" />
+    <AndroidAsset Include="Assets\Raleway-Light.ttf" />
+    <AndroidAsset Include="Assets\Raleway-LightItalic.ttf" />
+    <AndroidAsset Include="Assets\Raleway-Medium.ttf" />
+    <AndroidAsset Include="Assets\Raleway-MediumItalic.ttf" />
+    <AndroidAsset Include="Assets\Raleway-Regular.ttf" />
+    <AndroidAsset Include="Assets\Raleway-RegularItalic.ttf" />
+    <AndroidAsset Include="Assets\Raleway-SemiBold.ttf" />
+    <AndroidAsset Include="Assets\Raleway-SemiBoldItalic.ttf" />
+    <AndroidAsset Include="Assets\Raleway-Thin.ttf" />
+    <AndroidAsset Include="Assets\Raleway-ThinItalic.ttf" />
+    <AndroidAsset Include="Assets\Raleway-Black.ttf" />
+    <AndroidAsset Include="Assets\Raleway-BlackItalic.ttf" />
+    <AndroidAsset Include="Assets\Raleway-Bold.ttf" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>
@@ -140,6 +170,16 @@
       <Project>{A982CCF4-5810-4AB5-866B-84EB922248BF}</Project>
       <Name>XFBleServerClient.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\drawable-hdpi\" />
+    <Folder Include="Resources\drawable-mdpi\" />
+    <Folder Include="Resources\drawable-xhdpi\" />
+    <Folder Include="Resources\drawable-xxhdpi\" />
+    <Folder Include="Resources\drawable-xxxhdpi\" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\background_image.png" />
   </ItemGroup>
   <Import Project="..\..\XFBleServerClient.Shared\XFBleServerClient.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

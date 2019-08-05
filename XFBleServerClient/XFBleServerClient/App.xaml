@@ -2,10 +2,50 @@
 <prism:PrismApplication x:Class="XFBleServerClient.Core.App"
                         xmlns="http://xamarin.com/schemas/2014/forms"
                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                        xmlns:ef="clr-namespace:AiForms.Effects;assembly=AiForms.Effects"
+                        xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
                         xmlns:prism="clr-namespace:Prism.DryIoc;assembly=Prism.DryIoc.Forms">
-    <Application.Resources>
 
-        <!--  Application resource dictionary  -->
+    <prism:PrismApplication.Resources>
+        <ResourceDictionary>
 
-    </Application.Resources>
+            <OnPlatform x:Key="RalewayBoldFontFamily"
+                        x:TypeArguments="x:String"
+                        Android="Raleway-Bold.ttf#Raleway-Bold"
+                        iOS="Raleway-Bold" />
+
+            <OnPlatform x:Key="RalewayLightFontFamily"
+                        x:TypeArguments="x:String"
+                        Android="Raleway-Light.ttf#Raleway-Light"
+                        iOS="Raleway-Light" />
+
+            <OnPlatform x:Key="RalewayMediumFontFamily"
+                        x:TypeArguments="x:String"
+                        Android="Raleway-Medium.ttf#Raleway-Medium"
+                        iOS="Raleway-Medium" />
+
+            <OnPlatform x:Key="RalewayFontFamily"
+                        x:TypeArguments="x:String"
+                        Android="Raleway-Regular.ttf#Raleway"
+                        iOS="Raleway-Regular" />
+
+            <Color x:Key="Color.PrimaryBlue">#1976d2</Color>
+            <Color x:Key="Color.PrimaryRed">#d32f2f</Color>
+            <Color x:Key="Color.PageBackground">#FFF5F8FD</Color>
+            <Color x:Key="Color.PrimaryGray">#616161</Color>
+
+            <Style TargetType="Label">
+                <Setter Property="FontFamily" Value="{StaticResource RalewayFontFamily}" />
+            </Style>
+
+            <Style x:Key="IconLabelMaterialStyle"
+                   TargetType="iconize:IconLabel">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="FontFamily" Value="Material Icons" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </prism:PrismApplication.Resources>
 </prism:PrismApplication>

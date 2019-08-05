@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Grid x:Class="XFBleServerClient.Core.Views.DialogInfoPage"
+      xmlns="http://xamarin.com/schemas/2014/forms"
+      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+      xmlns:prism="http://prismlibrary.com"
+      prism:DialogLayout.RelativeWidthRequest="{OnIdiom Default=0.80,
+                                                        Desktop=0.5}"
+      prism:ViewModelLocator.AutowireViewModel="True"
+      BackgroundColor="White">
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <Label Margin="20,20,20,10"
+           FontSize="16"
+           Text="Information"
+           TextColor="Black" />
+
+    <Label Grid.Row="1"
+           Margin="20,0,20,10"
+           FontSize="12"
+           Text="{Binding Message}" />
+
+    <Button Grid.Row="2"
+            Margin="0,0,0,20"
+            BackgroundColor="{StaticResource Color.PrimaryRed}"
+            Command="{Binding CloseCommand}"
+            HorizontalOptions="Center"
+            Text="Close" />
+</Grid>
