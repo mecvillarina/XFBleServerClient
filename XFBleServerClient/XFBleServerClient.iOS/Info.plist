@@ -23,33 +23,35 @@
     <key>UIAppFonts</key>
     <array>
       <string>iconize-material.ttf</string>
-      <string>Fonts/Raleway-Black.ttf</string>
-      <string>Fonts/Raleway-BlackItalic.ttf</string>
-      <string>Fonts/Raleway-Bold.ttf</string>
-      <string>Fonts/Raleway-BoldItalic.ttf</string>
-      <string>Fonts/Raleway-ExtraBold.ttf</string>
-      <string>Fonts/Raleway-ExtraBoldItalic.ttf</string>
-      <string>Fonts/Raleway-ExtraLight.ttf</string>
-      <string>Fonts/Raleway-ExtraLightItalic.ttf</string>
-      <string>Fonts/Raleway-Light.ttf</string>
-      <string>Fonts/Raleway-LightItalic.ttf</string>
-      <string>Fonts/Raleway-Medium.ttf</string>
-      <string>Fonts/Raleway-MediumItalic.ttf</string>
-      <string>Fonts/Raleway-Regular.ttf</string>
-      <string>Fonts/Raleway-RegularItalic.ttf</string>
-      <string>Fonts/Raleway-SemiBold.ttf</string>
-      <string>Fonts/Raleway-SemiBoldItalic.ttf</string>
-      <string>Fonts/Raleway-Thin.ttf</string>
-      <string>Fonts/Raleway-ThinItalic.ttf</string>
+      <string>Raleway-Black.ttf</string>
+      <string>Raleway-BlackItalic.ttf</string>
+      <string>Raleway-Bold.ttf</string>
+      <string>Raleway-BoldItalic.ttf</string>
+      <string>Raleway-ExtraBold.ttf</string>
+      <string>Raleway-ExtraBoldItalic.ttf</string>
+      <string>Raleway-ExtraLight.ttf</string>
+      <string>Raleway-ExtraLightItalic.ttf</string>
+      <string>Raleway-Light.ttf</string>
+      <string>Raleway-LightItalic.ttf</string>
+      <string>Raleway-Medium.ttf</string>
+      <string>Raleway-MediumItalic.ttf</string>
+      <string>Raleway-Regular.ttf</string>
+      <string>Raleway-RegularItalic.ttf</string>
+      <string>Raleway-SemiBold.ttf</string>
+      <string>Raleway-SemiBoldItalic.ttf</string>
+      <string>Raleway-Thin.ttf</string>
+      <string>Raleway-ThinItalic.ttf</string>
     </array>
     <key>MinimumOSVersion</key>
-    <string>8.0</string>
+    <string>10.0</string>
     <key>CFBundleDisplayName</key>
     <string>XFBleServerClient</string>
     <key>CFBundleIdentifier</key>
-    <string>com.companyname.appname</string>
+    <string>ch.erni.blesc</string>
     <key>CFBundleVersion</key>
-    <string>1.0</string>
+    <string>0.0.1</string>
+    <key>CFBundleShortVersionString</key>
+    <string>0.0.1</string>
     <key>CFBundleIconFiles</key>
     <array>
       <string>Icon-60@2x</string>

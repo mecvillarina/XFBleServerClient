@@ -4,18 +4,16 @@ using Prism.Mvvm;
 using Prism.Navigation;
 using Prism.Services.Dialogs;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace XFBleServerClient.Core.ViewModels
 {
-	public class DialogInfoPageViewModel : ViewModelBase,IDialogAware, IAutoInitialize
+	public class DialogInfoPageViewModel : BindableBase, IDialogAware
 	{
-		public DialogInfoPageViewModel(INavigationService navigationService) : base(navigationService)
+		public DialogInfoPageViewModel() 
 		{
-			RequestClose = new Action<IDialogParameters>((parameters) => { });
-			CloseCommand = new DelegateCommand(() => RequestClose(null));
+			this.CloseCommand = new DelegateCommand(() => OnCloseCommand());
 		}
+
 
 		private string _message;
 		[AutoInitialize(true)] // Makes Message parameter required
@@ -31,6 +29,10 @@ namespace XFBleServerClient.Core.ViewModels
 		public bool CanCloseDialog()
 		{
 			return true;
+		}
+		private void OnCloseCommand()
+		{
+			RequestClose?.Invoke(new DialogParameters());
 		}
 
 		public void OnDialogClosed()

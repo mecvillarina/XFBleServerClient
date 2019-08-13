@@ -1,4 +1,5 @@
-﻿using Plugin.BluetoothLE;
+﻿using Acr.UserDialogs;
+using Plugin.BluetoothLE;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using Prism;
@@ -65,6 +66,7 @@ namespace XFBleServerClient.Shared
 		{
 			container.RegisterInstance<IPermissions>(CrossPermissions.Current);
 			container.RegisterInstance<IAdapter>(CrossBleAdapter.Current);
+			container.RegisterInstance<IUserDialogs>(UserDialogs.Instance);
 		}
 	}
 }

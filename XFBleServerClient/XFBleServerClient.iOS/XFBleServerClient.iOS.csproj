@@ -47,9 +47,10 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <MtouchArch>ARM64</MtouchArch>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignKey>iPhone Developer: mark villarina (FAJYQ694NX)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <CodesignProvision>XC ch erni BLESc Development</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -91,28 +92,32 @@
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <None Include="Entitlements.plist" />
-    <None Include="Info.plist" />
+    <None Include="Info.plist">
+      <SubType>Designer</SubType>
+    </None>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <ITunesArtwork Include="iTunesArtwork@1x.png" />
     <ITunesArtwork Include="iTunesArtwork@2x.png" />
-    <BundleResource Include="Resources\Fonts\Raleway-BoldItalic.ttf" />
-    <BundleResource Include="Resources\Fonts\Raleway-ExtraBold.ttf" />
-    <BundleResource Include="Resources\Fonts\Raleway-ExtraBoldItalic.ttf" />
-    <BundleResource Include="Resources\Fonts\Raleway-ExtraLight.ttf" />
-    <BundleResource Include="Resources\Fonts\Raleway-ExtraLightItalic.ttf" />
-    <BundleResource Include="Resources\Fonts\Raleway-Light.ttf" />
-    <BundleResource Include="Resources\Fonts\Raleway-LightItalic.ttf" />
-    <BundleResource Include="Resources\Fonts\Raleway-Medium.ttf" />
-    <BundleResource Include="Resources\Fonts\Raleway-MediumItalic.ttf" />
-    <BundleResource Include="Resources\Fonts\Raleway-Regular.ttf" />
-    <BundleResource Include="Resources\Fonts\Raleway-RegularItalic.ttf" />
-    <BundleResource Include="Resources\Fonts\Raleway-SemiBold.ttf" />
-    <BundleResource Include="Resources\Fonts\Raleway-SemiBoldItalic.ttf" />
-    <BundleResource Include="Resources\Fonts\Raleway-Thin.ttf" />
-    <BundleResource Include="Resources\Fonts\Raleway-ThinItalic.ttf" />
-    <BundleResource Include="Resources\Fonts\Raleway-Black.ttf" />
-    <BundleResource Include="Resources\Fonts\Raleway-BlackItalic.ttf" />
-    <BundleResource Include="Resources\Fonts\Raleway-Bold.ttf" />
+    <BundleResource Include="Resources\Raleway-BoldItalic.ttf" />
+    <BundleResource Include="Resources\Raleway-ExtraBold.ttf" />
+    <BundleResource Include="Resources\Raleway-ExtraBoldItalic.ttf" />
+    <BundleResource Include="Resources\Raleway-ExtraLight.ttf" />
+    <BundleResource Include="Resources\Raleway-ExtraLightItalic.ttf" />
+    <BundleResource Include="Resources\Raleway-Light.ttf" />
+    <BundleResource Include="Resources\Raleway-LightItalic.ttf" />
+    <BundleResource Include="Resources\Raleway-Medium.ttf" />
+    <BundleResource Include="Resources\Raleway-MediumItalic.ttf" />
+    <BundleResource Include="Resources\Raleway-Regular.ttf" />
+    <BundleResource Include="Resources\Raleway-RegularItalic.ttf" />
+    <BundleResource Include="Resources\Raleway-SemiBold.ttf" />
+    <BundleResource Include="Resources\Raleway-SemiBoldItalic.ttf" />
+    <BundleResource Include="Resources\Raleway-Thin.ttf" />
+    <BundleResource Include="Resources\Raleway-ThinItalic.ttf" />
+    <BundleResource Include="Resources\Raleway-Black.ttf" />
+    <BundleResource Include="Resources\Raleway-BlackItalic.ttf" />
+    <BundleResource Include="Resources\Raleway-Bold.ttf" />
+    <BundleResource Include="Resources\iconize-materialdesignicons.ttf" />
+    <BundleResource Include="Resources\iconize-material.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\Contents.json">
@@ -214,6 +219,15 @@
     </PackageReference>
     <PackageReference Include="Plugin.Permissions">
       <Version>3.0.0.12</Version>
+    </PackageReference>
+    <PackageReference Include="Prism.Core">
+      <Version>7.2.0.1367</Version>
+    </PackageReference>
+    <PackageReference Include="Prism.Forms">
+      <Version>7.2.0.1367</Version>
+    </PackageReference>
+    <PackageReference Include="UXDivers.Effects">
+      <Version>0.6.3</Version>
     </PackageReference>
     <PackageReference Include="Xam.Plugin.Iconize">
       <Version>3.5.0.129</Version>

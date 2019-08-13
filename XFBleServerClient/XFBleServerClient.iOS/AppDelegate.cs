@@ -20,11 +20,13 @@ namespace XFBleServerClient.iOS
 		{
 			global::Xamarin.Forms.Forms.Init();
 			FormsMaterial.Init();
-			AiForms.Effects.iOS.Effects.Init();
 
-			LoadFontIcons();
+			LoadFontIcons();	
 
 			Iconize.Init();
+
+			AiForms.Effects.iOS.Effects.Init();
+			UXDivers.Effects.iOS.Assembly.Register();
 
 			ConfigureContainer();
 			LoadApplication(_coreApp);

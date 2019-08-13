@@ -4,7 +4,8 @@
                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                         xmlns:ef="clr-namespace:AiForms.Effects;assembly=AiForms.Effects"
                         xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
-                        xmlns:prism="clr-namespace:Prism.DryIoc;assembly=Prism.DryIoc.Forms">
+                        xmlns:prism="clr-namespace:Prism.DryIoc;assembly=Prism.DryIoc.Forms"
+                        xmlns:uxdivers="clr-namespace:UXDivers.Effects;assembly=UXDivers.Effects">
 
     <prism:PrismApplication.Resources>
         <ResourceDictionary>
@@ -13,6 +14,11 @@
                         x:TypeArguments="x:String"
                         Android="Raleway-Bold.ttf#Raleway-Bold"
                         iOS="Raleway-Bold" />
+
+            <OnPlatform x:Key="RalewaySemiBoldFontFamily"
+                        x:TypeArguments="x:String"
+                        Android="Raleway-SemiBold.ttf#Raleway-SemiBold"
+                        iOS="Raleway-SemiBold" />
 
             <OnPlatform x:Key="RalewayLightFontFamily"
                         x:TypeArguments="x:String"
@@ -33,6 +39,44 @@
             <Color x:Key="Color.PrimaryRed">#d32f2f</Color>
             <Color x:Key="Color.PageBackground">#FFF5F8FD</Color>
             <Color x:Key="Color.PrimaryGray">#616161</Color>
+            <Color x:Key="Color.PrimaryGray1">#5C5774</Color>
+            <Color x:Key="Color.iOSOpaqueShadow">#80000000</Color>
+
+            <x:Double x:Key="MasterDetailFontSize">14</x:Double>
+
+            <OnPlatform x:Key="IconLabelFontSize"
+                        x:TypeArguments="x:Double"
+                        Android="20"
+                        iOS="24" />
+
+            <OnPlatform x:Key="NavigationBarHeight"
+                        x:TypeArguments="x:Double"
+                        Android="56"
+                        iOS="64" />
+
+            <OnPlatform x:Key="NavigationBarShadowSize"
+                        x:TypeArguments="x:Double"
+                        Android="2"
+                        iOS="1" />
+
+            <Style x:Key="NavigationBarStyle"
+                   TargetType="Grid">
+                <Setter Property="Padding" Value="20,0" />
+                <Setter Property="BackgroundColor" Value="#FCFBFE" />
+                <Setter Property="HeightRequest" Value="{StaticResource NavigationBarHeight}" />
+                <Setter Property="uxdivers:Effects.Shadow" Value="True" />
+                <Setter Property="uxdivers:Effects.ShadowSize" Value="{StaticResource NavigationBarShadowSize}" />
+                <Setter Property="uxdivers:Effects.ShadowIOSColor" Value="{StaticResource Color.iOSOpaqueShadow}" />
+            </Style>
+
+            <Style x:Key="NavigationBarTitleFontStyle"
+                   TargetType="Label">
+                <Setter Property="VerticalOptions" Value="CenterAndExpand" />
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+                <Setter Property="TextColor" Value="{StaticResource Color.PrimaryGray1}" />
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="LineBreakMode" Value="WordWrap" />
+            </Style>
 
             <Style TargetType="Label">
                 <Setter Property="FontFamily" Value="{StaticResource RalewayFontFamily}" />
