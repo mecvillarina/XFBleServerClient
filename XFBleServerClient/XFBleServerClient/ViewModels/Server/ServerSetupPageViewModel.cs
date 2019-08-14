@@ -5,11 +5,12 @@ using Prism.Commands;
 using Prism.Navigation;
 using Prism.Services.Dialogs;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using XFBleServerClient.Core.Common;
 using XFBleServerClient.Core.ItemModels;
+using XFBleServerClient.Core.Providers;
 
 namespace XFBleServerClient.Core.ViewModels
 {
@@ -53,7 +54,12 @@ namespace XFBleServerClient.Core.ViewModels
 			set => SetProperty(ref _serverName, value);
 		}
 
-		public ObservableCollection<GattServiceItemModel> GattServices { get; set; }
+		private List<GattServiceItemModel> _gattServices;
+		public List<GattServiceItemModel> GattServices
+		{
+			get => _gattServices;
+			set => SetProperty(ref _gattServices, value);
+		}
 
 		public DelegateCommand BackCommand { get; private set; }
 		public DelegateCommand SelectInfoCommand { get; private set; }
@@ -150,13 +156,46 @@ namespace XFBleServerClient.Core.ViewModels
 
 			if (this.GattServices == null)
 			{
-				this.GattServices = new ObservableCollection<GattServiceItemModel>();
+				this.GattServices = new List<GattServiceItemModel>();
+
+				this.GattServices.Add(new GattServiceItemModel()
+				{
+					Name = "Default Service",
+					ServiceUuid = new Guid($"{AppConstants.GuidStartPad}1370F02D74DE"),
+					Characteristics = new List<GattServiceCharacteristicItemModel>()
+					{
+						new GattServiceCharacteristicItemModel() { Name = "Read Device Information" },
+						new GattServiceCharacteristicItemModel() { Name = "Say Exact Word" }
+					},
+				});
+
+				string s = $"{AppConstants.GuidStartPad}{RandomProvider.RandomString(12)}";
+				this.GattServices.Add(new GattServiceItemModel()
+				{
+					IsDeletable = false,
+					IsEditable = false,
+					Name = "Mathematical Operations",
+					ServiceUuid = new Guid($"{AppConstants.GuidStartPad}1370F02D74DE"),
+					Characteristics = new List<GattServiceCharacteristicItemModel>()
+					{
+						new GattServiceCharacteristicItemModel() { Name = "Addition" },
+						new GattServiceCharacteristicItemModel() { Name = "Subtraction" },
+						new GattServiceCharacteristicItemModel() { Name = "Multiplication" },
+						new GattServiceCharacteristicItemModel() { Name = "Division" },
+					}
+				});
 
 				this.GattServices.Add(new GattServiceItemModel()
 				{
 					IsDeletable = false,
-					Name = "Default Service",
-					ServiceUuid = new Guid("A495FF20-C5B1-4B44-B512-1370F02D74DE")
+					IsEditable = false,
+					Name = "Location Tracking",
+					ServiceUuid = new Guid($"{AppConstants.GuidStartPad}1370F02D74DE"),
+					Characteristics = new List<GattServiceCharacteristicItemModel>()
+					{
+						new GattServiceCharacteristicItemModel() { Name = "Ask my location" },
+						new GattServiceCharacteristicItemModel() { Name = "Reverse Geocoding" },
+					}
 				});
 			}
 		}

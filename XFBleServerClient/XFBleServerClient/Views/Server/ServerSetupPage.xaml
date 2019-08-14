@@ -50,14 +50,16 @@
             </Grid>
 
             <Grid Grid.Row="1"
-                  Padding="20,10">
+                  Padding="20,10"
+                  RowSpacing="16">
+
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <StackLayout Spacing="4">
+                <StackLayout>
                     <Grid ColumnSpacing="8"
                           HorizontalOptions="StartAndExpand">
                         <Grid.ColumnDefinitions>
@@ -80,14 +82,10 @@
                                VerticalOptions="CenterAndExpand"
                                Visual="Default" />
                     </Grid>
-
-                    <BoxView BackgroundColor="{StaticResource Color.PrimaryGray1}"
-                             HeightRequest="0.6" />
                 </StackLayout>
 
-
-
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="1"
+                      RowSpacing="8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition />
@@ -99,7 +97,7 @@
                            Text="Services"
                            TextColor="{StaticResource Color.PrimaryGray1}" />
 
-                    <iconize:IconLabel Style="{StaticResource IconLabelMaterialStyle}"
+                    <!--<iconize:IconLabel Style="{StaticResource IconLabelMaterialStyle}"
                                        Margin="0"
                                        FontSize="24"
                                        HorizontalOptions="EndAndExpand"
@@ -108,40 +106,68 @@
                         <iconize:IconLabel.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding BackCommand}" />
                         </iconize:IconLabel.GestureRecognizers>
-                    </iconize:IconLabel>
+                    </iconize:IconLabel>-->
 
+                    <ListView Grid.Row="1"
+                              BackgroundColor="{StaticResource Color.PageBackground}"
+                              HasUnevenRows="True"
+                              ItemsSource="{Binding GattServices}"
+                              SelectionMode="None"
+                              SeparatorVisibility="None">
 
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell StyleId="RemoveSelectionStyle">
+                                    <StackLayout Padding="0,12"
+                                                 VerticalOptions="StartAndExpand">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="4*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackLayout>
+                                                <Label FontFamily="{StaticResource RalewaySemiBoldFontFamily}"
+                                                       FontSize="14"
+                                                       HorizontalTextAlignment="Start"
+                                                       Text="{Binding Name}"
+                                                       TextColor="{StaticResource Color.PrimaryGray1}" />
+
+                                                <Label FontFamily="{StaticResource RalewayLightFontFamily}"
+                                                       FontSize="12"
+                                                       HorizontalTextAlignment="Start"
+                                                       Text="{Binding ServiceUuid, Converter={StaticResource GuidStringConverter}}"
+                                                       TextColor="{StaticResource Color.PrimaryGray1}" />
+                                            </StackLayout>
+
+                                            <Grid Grid.Column="1"
+                                                  IsVisible="{Binding IsDeletable}"
+                                                  VerticalOptions="Center">
+                                                <iconize:IconLabel Style="{StaticResource IconLabelMaterialStyle}"
+                                                                   Margin="0"
+                                                                   FontSize="24"
+                                                                   HorizontalOptions="End"
+                                                                   Text="md-remove-circle"
+                                                                   TextColor="{StaticResource Color.PrimaryRed}"
+                                                                   VerticalOptions="Center">
+                                                    <iconize:IconLabel.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding BackCommand}" />
+                                                    </iconize:IconLabel.GestureRecognizers>
+                                                </iconize:IconLabel>
+                                            </Grid>
+                                        </Grid>
+                                    </StackLayout>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+
+                    </ListView>
                 </Grid>
 
-                <StackLayout Grid.Row="2"
-                             Spacing="4">
-
-                    <BoxView Grid.Row="3"
-                             BackgroundColor="{StaticResource Color.PrimaryGray1}"
-                             HeightRequest="0.6" />
-
-                    <Grid HorizontalOptions="StartAndExpand">
-                        <Label FontFamily="{StaticResource RalewayBoldFontFamily}"
-                               FontSize="16"
-                               HorizontalTextAlignment="Start"
-                               Text="Status"
-                               TextColor="{StaticResource Color.PrimaryGray1}" />
-
-                        <Label FontFamily="{StaticResource RalewayBoldFontFamily}"
-                               FontSize="12"
-                               HorizontalTextAlignment="End"
-                               Text="{Binding CurrentStatus}"
-                               TextColor="{StaticResource Color.PrimaryGray1}"
-                               VerticalTextAlignment="Center" />
-                    </Grid>
-
-                    <BoxView Grid.Row="3"
-                             BackgroundColor="{StaticResource Color.PrimaryGray1}"
-                             HeightRequest="0.6" />
-
-                    <Button Command="{Binding BroadcastCommand}"
+                <StackLayout Grid.Row="2">
+                    <Button BackgroundColor="{StaticResource Color.PrimaryBlue}"
+                            Command="{Binding BroadcastCommand}"
                             Text="{Binding BtnText}" />
-
                 </StackLayout>
             </Grid>
 

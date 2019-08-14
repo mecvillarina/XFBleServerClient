@@ -2,6 +2,7 @@
 <prism:PrismApplication x:Class="XFBleServerClient.Core.App"
                         xmlns="http://xamarin.com/schemas/2014/forms"
                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                        xmlns:converters="clr-namespace:XFBleServerClient.Core.Converters"
                         xmlns:ef="clr-namespace:AiForms.Effects;assembly=AiForms.Effects"
                         xmlns:iconize="clr-namespace:Plugin.Iconize;assembly=Plugin.Iconize"
                         xmlns:prism="clr-namespace:Prism.DryIoc;assembly=Prism.DryIoc.Forms"
@@ -34,6 +35,8 @@
                         x:TypeArguments="x:String"
                         Android="Raleway-Regular.ttf#Raleway"
                         iOS="Raleway-Regular" />
+
+            <converters:GuidStringConverter x:Key="GuidStringConverter" />
 
             <Color x:Key="Color.PrimaryBlue">#1976d2</Color>
             <Color x:Key="Color.PrimaryRed">#d32f2f</Color>
