@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<views:ContentPageBase x:Class="XFBleServerClient.Core.Views.ServerSetupPage"
+<views:ContentPageBase x:Class="XFBleServerClient.Core.Views.GattServerServiceDetailPage"
                        xmlns="http://xamarin.com/schemas/2014/forms"
                        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                        xmlns:ef="clr-namespace:AiForms.Effects;assembly=AiForms.Effects"
@@ -7,7 +7,6 @@
                        xmlns:prism="http://prismlibrary.com"
                        xmlns:views="clr-namespace:XFBleServerClient.Core.Views"
                        prism:ViewModelLocator.AutowireViewModel="True">
-
     <Grid BackgroundColor="{StaticResource Color.PageBackground}">
         <Grid>
             <Grid.RowDefinitions>
@@ -20,8 +19,7 @@
                        Style="{StaticResource NavigationBarTitleFontStyle}"
                        FontFamily="{StaticResource RalewaySemiBoldFontFamily}"
                        HorizontalTextAlignment="Center"
-                       Text="GATT Server Setup" />
-
+                       Text="GATT Server Service Details" />
 
                 <iconize:IconLabel Style="{StaticResource IconLabelMaterialStyle}"
                                    Margin="0"
@@ -56,31 +54,30 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition />
-                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <StackLayout>
-                    <Grid ColumnSpacing="8"
-                          HorizontalOptions="StartAndExpand">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <Grid HorizontalOptions="StartAndExpand"
+                          RowSpacing="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
 
                         <Label FontFamily="{StaticResource RalewayBoldFontFamily}"
                                FontSize="16"
                                HorizontalTextAlignment="Start"
                                LineBreakMode="WordWrap"
-                               Text="Server Name"
+                               Text="Service Name"
                                TextColor="{StaticResource Color.PrimaryGray1}"
                                VerticalTextAlignment="Center" />
 
-                        <Entry Grid.Column="1"
-                               FontFamily="{StaticResource RalewayFontFamily}"
-                               Text="{Binding ServerName}"
-                               TextColor="{StaticResource Color.PrimaryGray1}"
-                               VerticalOptions="CenterAndExpand"
-                               Visual="Default" />
+                        <Label Grid.Row="1"
+                               FontFamily="{StaticResource RalewayLightFontFamily}"
+                               FontSize="16"
+                               HorizontalTextAlignment="Start"
+                               Text="{Binding SelectedService.Name}"
+                               TextColor="{StaticResource Color.PrimaryGray1}" />
                     </Grid>
                 </StackLayout>
 
@@ -94,7 +91,7 @@
                     <Label FontFamily="{StaticResource RalewayBoldFontFamily}"
                            FontSize="16"
                            HorizontalTextAlignment="Start"
-                           Text="Services"
+                           Text="Characteristics"
                            TextColor="{StaticResource Color.PrimaryGray1}" />
 
                     <!--<iconize:IconLabel Style="{StaticResource IconLabelMaterialStyle}"
@@ -111,32 +108,40 @@
                     <ListView Grid.Row="1"
                               BackgroundColor="{StaticResource Color.PageBackground}"
                               HasUnevenRows="True"
-                              ItemsSource="{Binding GattServices}"
-                              SelectionMode="Single"
+                              ItemsSource="{Binding SelectedService.Characteristics}"
+                              SelectionMode="None"
                               SeparatorVisibility="None">
-
-                        <ListView.Behaviors>
-                            <prism:EventToCommandBehavior Command="{Binding ServiceSelectionCommand}"
-                                                          EventArgsConverter="{StaticResource ItemTappedEventArgsConverter}"
-                                                          EventName="ItemTapped" />
-                        </ListView.Behaviors>
 
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell StyleId="RemoveSelectionStyle">
                                     <StackLayout Padding="0,12"
                                                  VerticalOptions="StartAndExpand">
-                                        <Label FontFamily="{StaticResource RalewaySemiBoldFontFamily}"
-                                               FontSize="14"
-                                               HorizontalTextAlignment="Start"
-                                               Text="{Binding Name}"
-                                               TextColor="{StaticResource Color.PrimaryGray1}" />
+                                        <StackLayout>
+                                            <Label FontFamily="{StaticResource RalewaySemiBoldFontFamily}"
+                                                   FontSize="14"
+                                                   HorizontalTextAlignment="Start"
+                                                   Text="{Binding Name}"
+                                                   TextColor="{StaticResource Color.PrimaryGray1}" />
 
-                                        <Label FontFamily="{StaticResource RalewayLightFontFamily}"
-                                               FontSize="12"
-                                               HorizontalTextAlignment="Start"
-                                               Text="{Binding ServiceUuid, Converter={StaticResource GuidStringConverter}}"
-                                               TextColor="{StaticResource Color.PrimaryGray1}" />
+                                            <Label FontFamily="{StaticResource RalewayLightFontFamily}"
+                                                   FontSize="12"
+                                                   HorizontalTextAlignment="Start"
+                                                   Text="{Binding CharacteristicUuid, Converter={StaticResource GuidStringConverter}}"
+                                                   TextColor="{StaticResource Color.PrimaryGray1}" />
+
+                                            <Label FontFamily="{StaticResource RalewayLightFontFamily}"
+                                                   FontSize="12"
+                                                   HorizontalTextAlignment="Start"
+                                                   Text="{Binding PropertiesDisplay}"
+                                                   TextColor="{StaticResource Color.PrimaryGray1}" />
+
+                                            <Label FontFamily="{StaticResource RalewayLightFontFamily}"
+                                                   FontSize="12"
+                                                   HorizontalTextAlignment="Start"
+                                                   Text="{Binding PermissionsDisplay}"
+                                                   TextColor="{StaticResource Color.PrimaryGray1}" />
+                                        </StackLayout>
                                     </StackLayout>
                                 </ViewCell>
                             </DataTemplate>
@@ -144,12 +149,6 @@
 
                     </ListView>
                 </Grid>
-
-                <StackLayout Grid.Row="2">
-                    <Button BackgroundColor="{StaticResource Color.PrimaryBlue}"
-                            Command="{Binding BroadcastCommand}"
-                            Text="{Binding BtnText}" />
-                </StackLayout>
             </Grid>
 
 

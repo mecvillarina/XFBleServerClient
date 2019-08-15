@@ -7,5 +7,6 @@
 		public const string ServerSetupPage = "ServerSetupPage";
 
 		public const string DialogInfoPage = "DialogInfoPage";
+		public const string GattServerServiceDetailPage = "GattServerServiceDetailPage";
 	}
 }

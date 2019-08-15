@@ -1,4 +1,5 @@
-﻿using Android.App;
+﻿using Acr.UserDialogs;
+using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Prism.Ioc;
@@ -23,9 +24,9 @@ namespace XFBleServerClient.Droid
 			ToolbarResource = Resource.Layout.Toolbar;
 
 			base.OnCreate(bundle);
-
 			global::Xamarin.Forms.Forms.Init(this, bundle);
 			FormsMaterial.Init(this, bundle);
+			UserDialogs.Init(this);
 			Plugin.Iconize.Iconize.Init(Resource.Id.toolbar, Resource.Id.sliding_tabs);
 
 			ConfigureContainer();

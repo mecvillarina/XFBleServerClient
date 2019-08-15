@@ -37,6 +37,7 @@
                         iOS="Raleway-Regular" />
 
             <converters:GuidStringConverter x:Key="GuidStringConverter" />
+            <converters:ItemTappedEventArgsConverter x:Key="ItemTappedEventArgsConverter" />
 
             <Color x:Key="Color.PrimaryBlue">#1976d2</Color>
             <Color x:Key="Color.PrimaryRed">#d32f2f</Color>

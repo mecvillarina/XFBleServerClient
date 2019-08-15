@@ -46,8 +46,8 @@ namespace XFBleServerClient.Core.ItemModels
 
 	public class GattServiceCharacteristicItemModel : BindableBase
 	{
-		private string _characteristicUuid;
-		public string CharacteristicUuid
+		private Guid _characteristicUuid;
+		public Guid CharacteristicUuid
 		{
 			get => _characteristicUuid;
 			set => SetProperty(ref _characteristicUuid, value);
@@ -62,5 +62,18 @@ namespace XFBleServerClient.Core.ItemModels
 
 		public CharacteristicProperties Properties { get; set; }
 		public GattPermissions Permissions { get; set; }
+
+		public Action<object> ReadRequestAction { get; set; }
+		public Action<object> WriteRequestAction { get; set; }
+
+		public string PropertiesDisplay
+		{
+			get => $"Characteristic Properties: {Properties.ToString()}"; 
+		}
+
+		public string PermissionsDisplay
+		{
+			get => $"Gatt Permissions: {Permissions.ToString()}";
+		}
 	}
 }

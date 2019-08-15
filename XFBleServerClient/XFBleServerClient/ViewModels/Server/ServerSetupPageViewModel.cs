@@ -29,7 +29,9 @@ namespace XFBleServerClient.Core.ViewModels
 			this.BackCommand = new DelegateCommand(async () => await OnBackCommandAsync());
 			this.SelectInfoCommand = new DelegateCommand(async () => await ExecuteSelectInfoCommand());
 			this.BroadcastCommand = new DelegateCommand(async () => await OnBroadcastCommandAsync(), () => !string.IsNullOrWhiteSpace(this.ServerName)).ObservesProperty(() => this.ServerName);
+			this.ServiceSelectionCommand = new DelegateCommand<GattServiceItemModel>(async (item) => await OnServiceSelectionCommand(item));
 		}
+
 
 		IGattServer _gattServer;
 
@@ -64,6 +66,7 @@ namespace XFBleServerClient.Core.ViewModels
 		public DelegateCommand BackCommand { get; private set; }
 		public DelegateCommand SelectInfoCommand { get; private set; }
 		public DelegateCommand BroadcastCommand { get; private set; }
+		public DelegateCommand<GattServiceItemModel> ServiceSelectionCommand { get; private set; }
 
 		private async Task ExecuteSelectInfoCommand()
 		{
@@ -126,11 +129,33 @@ namespace XFBleServerClient.Core.ViewModels
 			//});
 		}
 
+		private async Task OnServiceSelectionCommand(GattServiceItemModel item)
+		{
+			NavigationParameters parameters = new NavigationParameters();
+			parameters.Add(ParameterConstants.SelectedService, item);
+
+			await this.NavigationService.NavigateAsync(ViewNames.GattServerServiceDetailPage, parameters);
+		}
+
 		async Task<bool> BuildServer()
 		{
 			try
 			{
 				_gattServer = await _adapter.CreateGattServer();
+				
+				foreach(var gattServiceItemModel in GattServices)
+				{
+					var service = _gattServer.CreateService(gattServiceItemModel.ServiceUuid, true);
+
+					foreach (var gattCharacteristicItemModel in gattServiceItemModel.Characteristics)
+					{
+						BuildCharacteristics(service, gattCharacteristicItemModel);
+					}
+
+					_gattServer.AddService(service);
+				}
+
+
 				this.BtnText = "Stop Broadcast";
 				return true;
 			}
@@ -142,6 +167,11 @@ namespace XFBleServerClient.Core.ViewModels
 			}
 
 			return false;
+		}
+
+		void BuildCharacteristics(Plugin.BluetoothLE.Server.IGattService service, GattServiceCharacteristicItemModel model)
+		{
+			var characteristic = service.AddCharacteristic(model.CharacteristicUuid, model.Properties, model.Permissions);
 		}
 
 		public override async void OnNavigatedTo(INavigationParameters parameters)
@@ -161,11 +191,11 @@ namespace XFBleServerClient.Core.ViewModels
 				this.GattServices.Add(new GattServiceItemModel()
 				{
 					Name = "Default Service",
-					ServiceUuid = new Guid($"{AppConstants.GuidStartPad}1370F02D74DE"),
+					ServiceUuid = new Guid("B78F4D10-7438-4CF5-A576-1370F02D74DE"),
 					Characteristics = new List<GattServiceCharacteristicItemModel>()
 					{
-						new GattServiceCharacteristicItemModel() { Name = "Read Device Information" },
-						new GattServiceCharacteristicItemModel() { Name = "Say Exact Word" }
+						new GattServiceCharacteristicItemModel() { Name = "Read Device Information", CharacteristicUuid = new Guid("B78F4D11-7438-4CF5-A576-1370F02D74DE"), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read, Permissions = GattPermissions.Read },
+						new GattServiceCharacteristicItemModel() { Name = "Say Exact Word" , CharacteristicUuid = new Guid("B78F4D12-7438-4CF5-A576-1370F02D74DE"), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write}
 					},
 				});
 
@@ -175,13 +205,13 @@ namespace XFBleServerClient.Core.ViewModels
 					IsDeletable = false,
 					IsEditable = false,
 					Name = "Mathematical Operations",
-					ServiceUuid = new Guid($"{AppConstants.GuidStartPad}1370F02D74DE"),
+					ServiceUuid = new Guid("633C1280-A2D9-4A73-A5F3-F12CCFB0725C"),
 					Characteristics = new List<GattServiceCharacteristicItemModel>()
 					{
-						new GattServiceCharacteristicItemModel() { Name = "Addition" },
-						new GattServiceCharacteristicItemModel() { Name = "Subtraction" },
-						new GattServiceCharacteristicItemModel() { Name = "Multiplication" },
-						new GattServiceCharacteristicItemModel() { Name = "Division" },
+						new GattServiceCharacteristicItemModel() { Name = "Addition",CharacteristicUuid = new Guid("633C1281-A2D9-4A73-A5F3-F12CCFB0725C"), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
+						new GattServiceCharacteristicItemModel() { Name = "Subtraction",CharacteristicUuid = new Guid("633C1282-A2D9-4A73-A5F3-F12CCFB0725C"), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
+						new GattServiceCharacteristicItemModel() { Name = "Multiplication",CharacteristicUuid = new Guid("633C1283-A2D9-4A73-A5F3-F12CCFB0725C"), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
+						new GattServiceCharacteristicItemModel() { Name = "Division",CharacteristicUuid = new Guid("633C1284-A2D9-4A73-A5F3-F12CCFB0725C"), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
 					}
 				});
 
@@ -190,11 +220,11 @@ namespace XFBleServerClient.Core.ViewModels
 					IsDeletable = false,
 					IsEditable = false,
 					Name = "Location Tracking",
-					ServiceUuid = new Guid($"{AppConstants.GuidStartPad}1370F02D74DE"),
+					ServiceUuid = new Guid("064B5B50-6ED8-403E-B158-B77111B5B49F"),
 					Characteristics = new List<GattServiceCharacteristicItemModel>()
 					{
-						new GattServiceCharacteristicItemModel() { Name = "Ask my location" },
-						new GattServiceCharacteristicItemModel() { Name = "Reverse Geocoding" },
+						new GattServiceCharacteristicItemModel() { Name = "Ask my location", CharacteristicUuid = new Guid("064B5B51-6ED8-403E-B158-B77111B5B49F"), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read, Permissions = GattPermissions.Read },
+						new GattServiceCharacteristicItemModel() { Name = "Reverse Geocoding",CharacteristicUuid = new Guid("064B5B52-6ED8-403E-B158-B77111B5B49F"), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
 					}
 				});
 			}

@@ -33,6 +33,8 @@ namespace XFBleServerClient.Shared
 			container.RegisterForNavigation<NavigationPage>();
 			container.RegisterForNavigation<LandingPage, LandingPageViewModel>();
 			container.RegisterForNavigation<ServerSetupPage, ServerSetupPageViewModel>();
+			container.RegisterForNavigation<GattServerServiceDetailPage, GattServerServiceDetailPageViewModel>();
+
 			container.RegisterDialog<DialogInfoPage, DialogInfoPageViewModel>();
 
 		}
