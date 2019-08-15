@@ -14,6 +14,7 @@
     <PackageReference Include="Plugin.Permissions" Version="3.0.0.12" />
     <PackageReference Include="Prism.Core" Version="7.2.0.1367" />
     <PackageReference Include="Prism.Forms" Version="7.2.0.1367" />
+    <PackageReference Include="ReactiveUI.Fody" Version="9.0.1" />
     <PackageReference Include="System.Reactive" Version="4.1.6" />
     <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.3" />
@@ -29,16 +30,22 @@
     <Compile Update="Views\LandingPage.xaml.cs">
       <DependentUpon>LandingPage.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Server\GattServerSetupPage.xaml.cs">
+      <DependentUpon>GattServerSetupPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Views\Client\ClientDeviceListPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Views\DialogInfoPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\Server\GattServerServiceDetailPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Server\ServerSetupPage.xaml">
+    <EmbeddedResource Update="Views\Server\GattServerSetupPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

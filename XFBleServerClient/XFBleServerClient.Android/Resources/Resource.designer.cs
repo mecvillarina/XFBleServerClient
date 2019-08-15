@@ -2969,6 +2969,7 @@ namespace XFBleServerClient.Droid
 			global::AndroidHUD.Resource.Styleable.ProgressWheel_ahText = global::XFBleServerClient.Droid.Resource.Styleable.ProgressWheel_ahText;
 			global::AndroidHUD.Resource.Styleable.ProgressWheel_ahTextColor = global::XFBleServerClient.Droid.Resource.Styleable.ProgressWheel_ahTextColor;
 			global::AndroidHUD.Resource.Styleable.ProgressWheel_ahTextSize = global::XFBleServerClient.Droid.Resource.Styleable.ProgressWheel_ahTextSize;
+			global::Splat.Resource.String.library_name = global::XFBleServerClient.Droid.Resource.String.library_name;
 			global::Xamarin.Forms.Material.Android.Resource.Animation.abc_fade_in = global::XFBleServerClient.Droid.Resource.Animation.abc_fade_in;
 			global::Xamarin.Forms.Material.Android.Resource.Animation.abc_fade_out = global::XFBleServerClient.Droid.Resource.Animation.abc_fade_out;
 			global::Xamarin.Forms.Material.Android.Resource.Animation.abc_grow_fade_in_from_bottom = global::XFBleServerClient.Droid.Resource.Animation.abc_grow_fade_in_from_bottom;

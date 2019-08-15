@@ -21,11 +21,11 @@ namespace XFBleServerClient.Core.ViewModels
 
 			if (selection == AppConstants.Server)
 			{
-				page = ViewNames.ServerSetupPage;
+				page = ViewNames.GattServerSetupPage;
 			}
 			else if (selection == AppConstants.Client)
 			{
-
+				page = ViewNames.ClientDeviceListPage;
 			}
 
 			var s = await this.NavigationService.NavigateAsync(page);

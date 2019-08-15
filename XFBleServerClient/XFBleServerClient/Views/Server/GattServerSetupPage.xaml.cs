@@ -2,9 +2,9 @@
 
 namespace XFBleServerClient.Core.Views
 {
-    public partial class ServerSetupPage : ContentPageBase
+    public partial class GattServerSetupPage : ContentPageBase
     {
-        public ServerSetupPage()
+        public GattServerSetupPage()
         {
             InitializeComponent();
         }
