@@ -146,7 +146,7 @@ namespace XFBleServerClient.Core.ViewModels
 				foreach(var gattServiceItemModel in GattServices)
 				{
 					var service = _gattServer.CreateService(gattServiceItemModel.ServiceUuid, true);
-
+						
 					foreach (var gattCharacteristicItemModel in gattServiceItemModel.Characteristics)
 					{
 						BuildCharacteristics(service, gattCharacteristicItemModel);
@@ -187,46 +187,7 @@ namespace XFBleServerClient.Core.ViewModels
 			if (this.GattServices == null)
 			{
 				this.GattServices = new List<GattServiceItemModel>();
-
-				this.GattServices.Add(new GattServiceItemModel()
-				{
-					Name = "Default Service",
-					ServiceUuid = new Guid("B78F4D10-7438-4CF5-A576-1370F02D74DE"),
-					Characteristics = new List<GattServiceCharacteristicItemModel>()
-					{
-						new GattServiceCharacteristicItemModel() { Name = "Read Device Information", CharacteristicUuid = new Guid("B78F4D11-7438-4CF5-A576-1370F02D74DE"), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read, Permissions = GattPermissions.Read },
-						new GattServiceCharacteristicItemModel() { Name = "Say Exact Word" , CharacteristicUuid = new Guid("B78F4D12-7438-4CF5-A576-1370F02D74DE"), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write}
-					},
-				});
-
-				string s = $"{AppConstants.GuidStartPad}{RandomProvider.RandomString(12)}";
-				this.GattServices.Add(new GattServiceItemModel()
-				{
-					IsDeletable = false,
-					IsEditable = false,
-					Name = "Mathematical Operations",
-					ServiceUuid = new Guid("633C1280-A2D9-4A73-A5F3-F12CCFB0725C"),
-					Characteristics = new List<GattServiceCharacteristicItemModel>()
-					{
-						new GattServiceCharacteristicItemModel() { Name = "Addition",CharacteristicUuid = new Guid("633C1281-A2D9-4A73-A5F3-F12CCFB0725C"), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
-						new GattServiceCharacteristicItemModel() { Name = "Subtraction",CharacteristicUuid = new Guid("633C1282-A2D9-4A73-A5F3-F12CCFB0725C"), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
-						new GattServiceCharacteristicItemModel() { Name = "Multiplication",CharacteristicUuid = new Guid("633C1283-A2D9-4A73-A5F3-F12CCFB0725C"), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
-						new GattServiceCharacteristicItemModel() { Name = "Division",CharacteristicUuid = new Guid("633C1284-A2D9-4A73-A5F3-F12CCFB0725C"), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
-					}
-				});
-
-				this.GattServices.Add(new GattServiceItemModel()
-				{
-					IsDeletable = false,
-					IsEditable = false,
-					Name = "Location Tracking",
-					ServiceUuid = new Guid("064B5B50-6ED8-403E-B158-B77111B5B49F"),
-					Characteristics = new List<GattServiceCharacteristicItemModel>()
-					{
-						new GattServiceCharacteristicItemModel() { Name = "Ask my location", CharacteristicUuid = new Guid("064B5B51-6ED8-403E-B158-B77111B5B49F"), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read, Permissions = GattPermissions.Read },
-						new GattServiceCharacteristicItemModel() { Name = "Reverse Geocoding",CharacteristicUuid = new Guid("064B5B52-6ED8-403E-B158-B77111B5B49F"), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
-					}
-				});
+				this.GattServices = GattServiceProvider.GetServices();
 			}
 		}
 	}

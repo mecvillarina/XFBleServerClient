@@ -1,4 +1,5 @@
-﻿using Acr.UserDialogs;
+﻿using Acr.Collections;
+using Acr.UserDialogs;
 using Plugin.BluetoothLE;
 using Prism.Commands;
 using Prism.Navigation;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using XFBleServerClient.Core.Common;
 using XFBleServerClient.Core.ItemModels;
 
 namespace XFBleServerClient.Core.ViewModels
@@ -23,22 +25,25 @@ namespace XFBleServerClient.Core.ViewModels
 			_userDialogs = userDialogs;
 			_adapter = adapter;
 
+			this.BackCommand = new DelegateCommand(async () => await OnBackCommandAsync());
 			this.ScanCommand = new DelegateCommand(() => OnScanCommand());
-
-			Devices = new List<ScanResultItemModel>();
+			this.ServerSelectionCommand = new DelegateCommand<ScanResultItemModel>(async (model) => await OnServerSelectionCommandAsync(model));
 		}
 
 
-		IDisposable scan;
+
+		IDisposable _scan;
 		CompositeDisposable deactivateWith;
 		protected CompositeDisposable DeactivateWith
 		{
 			get
 			{
-				if (this.deactivateWith == null)
-					this.deactivateWith = new CompositeDisposable();
+				if (deactivateWith == null)
+				{
+					deactivateWith = new CompositeDisposable();
+				}
 
-				return this.deactivateWith;
+				return deactivateWith;
 			}
 		}
 
@@ -48,29 +53,40 @@ namespace XFBleServerClient.Core.ViewModels
 			get => _isScanning;
 			set => SetProperty(ref _isScanning, value);
 		}
-		private List<ScanResultItemModel> _devices;
-		public List<ScanResultItemModel> Devices
+
+		private string _scanMessage = "Scan";
+		public string ScanMessage
 		{
-			get => _devices;
-			set => SetProperty(ref _devices, value);
+			get => _scanMessage;
+			set => SetProperty(ref _scanMessage, value);
 		}
 
+		public ObservableList<ScanResultItemModel> Devices { get; } = new ObservableList<ScanResultItemModel>();
+
+		public DelegateCommand BackCommand { get; private set; }
 		public DelegateCommand ScanCommand { get; private set; }
+		public DelegateCommand<ScanResultItemModel> ServerSelectionCommand { get; private set; }
+
+		private async Task OnBackCommandAsync()
+		{
+			StopScanning();
+			DeactivateWith.Clear();
+			await this.NavigationService.GoBackAsync();
+		}
 
 		private void OnScanCommand()
 		{
 			if (this.IsScanning)
 			{
-				scan?.Dispose();
-				this.IsScanning = false;
+				StopScanning();
 			}
 			else
 			{
 				this.Devices.Clear();
-
+				this.ScanMessage = "Stop Scan";
 				this.IsScanning = true;
-				scan = this
-					._adapter
+				_scan =
+					_adapter
 					.Scan()
 					.Buffer(TimeSpan.FromSeconds(1))
 					.ObserveOn(RxApp.MainThreadScheduler)
@@ -94,7 +110,8 @@ namespace XFBleServerClient.Core.ViewModels
 								}
 							}
 
-							list = list.GroupBy(x => x.Uuid).Select(x => x.First()).ToList();
+							list = list.GroupBy(x => x.Uuid).Select(x => x.FirstOrDefault()).ToList();
+							list = list.Where(x => !string.IsNullOrEmpty(x.Name)).ToList();
 							//list = list.Where(x => x.Name.ToLower().Contains("biral_")).ToList();
 
 							if (list.Any())
@@ -108,5 +125,26 @@ namespace XFBleServerClient.Core.ViewModels
 			}
 
 		}
+
+		private void StopScanning()
+		{
+			if (this.IsScanning)
+			{
+				_scan?.Dispose();
+				this.IsScanning = false;
+				this.ScanMessage = "Scan";
+			}
+		}
+
+		private async Task OnServerSelectionCommandAsync(ScanResultItemModel model)
+		{
+			StopScanning();
+
+			var parameters = new NavigationParameters();
+			parameters.Add(ParameterConstants.SelectedDevice, model.Device);
+			await this.NavigationService.NavigateAsync(ViewNames.ClientDeviceDetailPage, parameters);
+		}
+
+
 	}
 }

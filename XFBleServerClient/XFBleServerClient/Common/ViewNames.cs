@@ -9,6 +9,6 @@
 		public const string GattServerServiceDetailPage = "GattServerServiceDetailPage";
 
 		public const string ClientDeviceListPage = "ClientDeviceListPage";
-
+		public const string ClientDeviceDetailPage = "ClientDeviceDetailPage";
 	}
 }

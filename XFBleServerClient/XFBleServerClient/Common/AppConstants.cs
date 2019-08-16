@@ -9,7 +9,7 @@ namespace XFBleServerClient.Core.Common
 		public const string Server = "Server";
 		public const string Client = "Client";
 
-		public const string GuidStartPad = "B78F4D11-7438-4CF5-A576-";
+		public const string GuidStartPad = "B78F4D10-7438-4CF5-A576";
 
 	}
 }

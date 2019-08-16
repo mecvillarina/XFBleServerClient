@@ -9,9 +9,34 @@ namespace XFBleServerClient.Core.ItemModels
 	{
 		public IDevice Device { get; private set; }
 
-		public string Name { get; private set; }
-		public bool IsConnected { get; private set; }
-		public Guid Uuid { get; private set; }
+		private string _name;
+		public string Name
+		{
+			get => _name;
+			set => SetProperty(ref _name, value);
+		}
+
+		private bool _isConnected;
+		public bool IsConnected
+		{
+			get => _isConnected;
+			set => SetProperty(ref _isConnected, value);
+		}
+
+		private Guid _uuid;
+		public Guid Uuid
+		{
+			get => _uuid;
+			set => SetProperty(ref _uuid, value);
+		}
+
+		private string _deviceUuid;
+		public string DeviceUuid
+		{
+			get => _deviceUuid;
+			set => SetProperty(ref _deviceUuid, value);
+		}
+
 		public int Rssi { get; private set; }
 		public bool IsConnectable { get; private set; }
 		public int ServiceCount { get; private set; }
@@ -27,6 +52,18 @@ namespace XFBleServerClient.Core.ItemModels
 			{
 				this.Device = result.Device;
 				this.Uuid = this.Device.Uuid;
+
+				this.Uuid = this.Device.Uuid;
+				switch (Xamarin.Forms.Device.RuntimePlatform)
+				{
+					case Xamarin.Forms.Device.Android:
+						this.DeviceUuid = this.Device.NativeDevice.GetType().GetProperty("Address").GetValue(Device.NativeDevice).ToString();
+						break;
+					case Xamarin.Forms.Device.iOS:
+						this.DeviceUuid = this.Uuid.ToString();
+						break;
+				}
+
 				response = true;
 			}
 

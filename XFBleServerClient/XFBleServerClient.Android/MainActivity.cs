@@ -1,4 +1,5 @@
 ﻿using Acr.UserDialogs;
+using Android;
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
@@ -31,6 +32,12 @@ namespace XFBleServerClient.Droid
 
 			ConfigureContainer();
 			LoadApplication(_coreApp);
+
+			RequestPermissions(new[]
+			{
+				Manifest.Permission.AccessCoarseLocation,
+				Manifest.Permission.BluetoothPrivileged
+			}, 0);
 		}
 
 		private void ConfigureContainer()
