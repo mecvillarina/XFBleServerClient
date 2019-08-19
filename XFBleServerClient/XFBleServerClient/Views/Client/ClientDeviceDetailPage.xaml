@@ -70,43 +70,79 @@
 
                 <ListView Grid.Row="2"
                           HasUnevenRows="True"
-                          ItemsSource="{Binding Devices}"
-                          SelectionMode="None"
-                          SeparatorVisibility="None"
-                          Visual="Default">
+                          IsGroupingEnabled="true"
+                          ItemsSource="{Binding GattCharacteristics}"
+                          SeparatorVisibility="None">
 
-                    <ListView.BackgroundColor>
-                        <OnPlatform x:TypeArguments="Color"
-                                    iOS="{StaticResource Color.PageBackground}" />
-                    </ListView.BackgroundColor>
+                    <!--<ListView.Behaviors>
+                        <prism:EventToCommandBehavior Command="{Binding SelectCharacteristic}" />
+                    </ListView.Behaviors>-->
 
-                    <ListView.Behaviors>
-                        <prism:EventToCommandBehavior Command="{Binding ServerSelectionCommand}"
-                                                      EventArgsConverter="{StaticResource ItemTappedEventArgsConverter}"
-                                                      EventName="ItemTapped" />
-                    </ListView.Behaviors>
+                    <ListView.GroupHeaderTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+
+                                <StackLayout Padding="4"
+                                             BackgroundColor="{StaticResource Color.PrimaryRed}">
+
+                                    <Label FontFamily="{StaticResource RalewayBoldFontFamily}"
+                                           FontSize="14"
+                                           Text="{Binding Name}"
+                                           TextColor="White" />
+
+                                </StackLayout>
+
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.GroupHeaderTemplate>
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell StyleId="RemoveSelectionStyle">
-                                <StackLayout Padding="0,12"
+                                <StackLayout Padding="4,0"
+                                             Spacing="4"
                                              VerticalOptions="StartAndExpand">
-                                    <Label FontFamily="{StaticResource RalewaySemiBoldFontFamily}"
-                                           FontSize="14"
-                                           HorizontalTextAlignment="Start"
-                                           Text="{Binding Name}"
-                                           TextColor="{StaticResource Color.PrimaryGray1}" />
 
-                                    <Label FontFamily="{StaticResource RalewayLightFontFamily}"
-                                           FontSize="12"
-                                           HorizontalTextAlignment="Start"
-                                           Text="{Binding Uuid, Converter={StaticResource GuidStringConverter}}"
-                                           TextColor="{StaticResource Color.PrimaryGray1}" />
+                                    <BoxView BackgroundColor="Transparent"
+                                             HeightRequest="0.4" />
+
+                                    <StackLayout VerticalOptions="StartAndExpand">
+                                        <Label FontFamily="{StaticResource RalewaySemiBoldFontFamily}"
+                                               FontSize="14"
+                                               Text="{Binding Description}"
+                                               TextColor="{StaticResource Color.PrimaryGray1}" />
+                                        <Label FontFamily="{StaticResource RalewayLightFontFamily}"
+                                               FontSize="12"
+                                               Text="{Binding Uuid, StringFormat='UUID: {0}'}"
+                                               TextColor="{StaticResource Color.PrimaryGray1}" />
+                                        <Label FontFamily="{StaticResource RalewayLightFontFamily}"
+                                               FontSize="12"
+                                               Text="{Binding Properties, StringFormat='Properties: {0}'}"
+                                               TextColor="{StaticResource Color.PrimaryGray1}" />
+                                        <Label FontFamily="{StaticResource RalewayLightFontFamily}"
+                                               FontSize="12"
+                                               Text="{Binding IsNotifying, StringFormat='Notifying: {0}'}"
+                                               TextColor="{StaticResource Color.PrimaryGray1}" />
+                                        <Label FontFamily="{StaticResource RalewayLightFontFamily}"
+                                               FontSize="12"
+                                               IsVisible="{Binding IsValueAvailable}"
+                                               Text="{Binding Value, StringFormat='Value: {0}'}"
+                                               TextColor="{StaticResource Color.PrimaryGray1}" />
+                                        <Label FontFamily="{StaticResource RalewayLightFontFamily}"
+                                               FontSize="12"
+                                               IsVisible="{Binding IsValueAvailable}"
+                                               Text="{Binding LastValue, StringFormat='Last Read: {0:hh:mm:ss tt}'}"
+                                               TextColor="{StaticResource Color.PrimaryGray1}" />
+
+                                    </StackLayout>
+
+                                    <BoxView BackgroundColor="{StaticResource Color.PrimaryGray1}"
+                                             HeightRequest="0.4" />
+
                                 </StackLayout>
                             </ViewCell>
                         </DataTemplate>
                     </ListView.ItemTemplate>
-
                 </ListView>
             </Grid>
 

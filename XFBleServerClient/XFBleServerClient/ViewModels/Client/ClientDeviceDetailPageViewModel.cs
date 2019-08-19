@@ -54,9 +54,10 @@ namespace XFBleServerClient.Core.ViewModels
 		{
 			if (_selectedDevice.Status == ConnectionStatus.Disconnected)
 			{
+				_selectedDevice.CancelConnection();
 				_selectedDevice.Connect(new ConnectionConfig()
 				{
-					AndroidConnectionPriority = ConnectionPriority.High,
+					AndroidConnectionPriority = ConnectionPriority.Normal,
 					AutoConnect = false
 				});
 			}
@@ -75,7 +76,16 @@ namespace XFBleServerClient.Core.ViewModels
 				_selectedDevice = parameters.GetValue<IDevice>(ParameterConstants.SelectedDevice);
 			}
 
-			var gattServiceItemModel = GattServiceProvider.GetServices().Select(x => x.Characteristics);
+			var gattServiceItemModel = GattServiceProvider.GetServices().Select(x =>
+			{
+				foreach (var characteristic in x.Characteristics)
+				{
+					characteristic.ServiceName = x.Name;
+				}
+
+				return x.Characteristics;
+			});
+
 			_gattServiceCharacterItemModels = new List<GattServiceCharacteristicItemModel>();
 
 			foreach(var model in gattServiceItemModel)
@@ -124,17 +134,18 @@ namespace XFBleServerClient.Core.ViewModels
 						Debug.WriteLine("Services:" + chs.Service.Uuid);
 						if (chs.Service.Uuid.ToString().StartsWith(AppConstants.GuidStartPad, StringComparison.CurrentCultureIgnoreCase))
 						{
+							var chsItemModel = _gattServiceCharacterItemModels.FirstOrDefault(x => x.CharacteristicUuid == chs.Uuid);
+
 							var service = this.GattCharacteristics.FirstOrDefault(x => x.ShortName.Equals(chs.Service.Uuid.ToString()));
 							if (service == null)
 							{
 								service = new Group<GattCharacteristicViewModel>(
-									$"{chs.Service.Description} ({chs.Service.Uuid})",
+									$"{chsItemModel.ServiceName}{Environment.NewLine}({chs.Service.Uuid})",
 									chs.Service.Uuid.ToString()
 								);
 								this.GattCharacteristics.Add(service);
 							}
 
-							var chsItemModel = _gattServiceCharacterItemModels.FirstOrDefault(x => x.CharacteristicUuid == chs.Uuid);
 							service.Add(new GattCharacteristicViewModel(chs, chsItemModel));
 						}
 					}

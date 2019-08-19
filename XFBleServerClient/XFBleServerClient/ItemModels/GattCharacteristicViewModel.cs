@@ -49,6 +49,6 @@ namespace XFBleServerClient.Core.ItemModels
 		public Guid ServiceUuid => this.Characteristic.Service.Uuid;
 		public string Description => this.CharacteristicItemModel.Name;
 		public string Properties => this.Characteristic.Properties.ToString();
-
+		public string ServiceName => this.CharacteristicItemModel.ServiceName;
 	}
 }

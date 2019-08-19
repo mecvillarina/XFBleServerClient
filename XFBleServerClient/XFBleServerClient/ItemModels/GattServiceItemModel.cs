@@ -60,6 +60,13 @@ namespace XFBleServerClient.Core.ItemModels
 			set => SetProperty(ref _name, value);
 		}
 
+		private string _serviceName;
+		public string ServiceName
+		{
+			get => _serviceName;
+			set => SetProperty(ref _serviceName, value);
+		}
+
 		public CharacteristicProperties Properties { get; set; }
 		public GattPermissions Permissions { get; set; }
 
