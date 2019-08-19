@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using XFBleServerClient.Core.Common;
 using XFBleServerClient.Core.Infrastructure;
 using XFBleServerClient.Core.ItemModels;
@@ -20,6 +21,7 @@ namespace XFBleServerClient.Core.ViewModels
 	{
 		public ClientDeviceDetailPageViewModel(INavigationService navigationService) : base(navigationService)
 		{
+			this.BackCommand = new DelegateCommand(async () => await OnBackCommandAsync());
 			this.ConnectCommand = new DelegateCommand(() => OnConnectCommand());
 		}
 
@@ -48,7 +50,14 @@ namespace XFBleServerClient.Core.ViewModels
 		}
 		public ObservableCollection<Group<GattCharacteristicViewModel>> GattCharacteristics { get; } = new ObservableCollection<Group<GattCharacteristicViewModel>>();
 
+		public DelegateCommand BackCommand { get; private set; }
 		public DelegateCommand ConnectCommand { get; private set; }
+
+		private async Task OnBackCommandAsync()
+		{
+			_selectedDevice.CancelConnection();
+			await this.NavigationService.GoBackAsync();
+		}
 
 		private void OnConnectCommand()
 		{
@@ -58,7 +67,7 @@ namespace XFBleServerClient.Core.ViewModels
 				_selectedDevice.Connect(new ConnectionConfig()
 				{
 					AndroidConnectionPriority = ConnectionPriority.Normal,
-					AutoConnect = false
+					AutoConnect = true
 				});
 			}
 			else
@@ -88,7 +97,7 @@ namespace XFBleServerClient.Core.ViewModels
 
 			_gattServiceCharacterItemModels = new List<GattServiceCharacteristicItemModel>();
 
-			foreach(var model in gattServiceItemModel)
+			foreach (var model in gattServiceItemModel)
 			{
 				_gattServiceCharacterItemModels.AddRange(model);
 			}
@@ -112,7 +121,7 @@ namespace XFBleServerClient.Core.ViewModels
 							this.ConnectMessage = "Connect";
 							try
 							{
-								this.GattCharacteristics.Clear();
+								//this.GattCharacteristics.Clear();
 							}
 							catch (Exception ex)
 							{
@@ -146,7 +155,10 @@ namespace XFBleServerClient.Core.ViewModels
 								this.GattCharacteristics.Add(service);
 							}
 
-							service.Add(new GattCharacteristicViewModel(chs, chsItemModel));
+							if(!service.Any(x => x.Uuid == chs.Uuid))
+							{
+								service.Add(new GattCharacteristicViewModel(chs, chsItemModel));
+							}
 						}
 					}
 

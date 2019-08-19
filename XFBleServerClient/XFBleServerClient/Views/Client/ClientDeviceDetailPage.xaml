@@ -74,6 +74,11 @@
                           ItemsSource="{Binding GattCharacteristics}"
                           SeparatorVisibility="None">
 
+                    <ListView.BackgroundColor>
+                        <OnPlatform x:TypeArguments="Color"
+                                    iOS="{StaticResource Color.PageBackground}" />
+                    </ListView.BackgroundColor>
+
                     <!--<ListView.Behaviors>
                         <prism:EventToCommandBehavior Command="{Binding SelectCharacteristic}" />
                     </ListView.Behaviors>-->
