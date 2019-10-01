@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<views:ContentPageBase x:Class="XFBleServerClient.Core.Views.ClientDeviceDetailPage"
+<views:ContentPageBase x:Class="XFBleServerClient.Core.Views.ClientDeviceCharacteristicsDetailPage"
                        xmlns="http://xamarin.com/schemas/2014/forms"
                        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                        xmlns:ef="clr-namespace:AiForms.Effects;assembly=AiForms.Effects"
@@ -7,6 +7,7 @@
                        xmlns:prism="http://prismlibrary.com"
                        xmlns:views="clr-namespace:XFBleServerClient.Core.Views"
                        prism:ViewModelLocator.AutowireViewModel="True">
+
     <Grid BackgroundColor="{StaticResource Color.PageBackground}">
         <Grid>
             <Grid.RowDefinitions>
@@ -19,7 +20,7 @@
                        FontFamily="{StaticResource RalewaySemiBoldFontFamily}"
                        HorizontalTextAlignment="Center"
                        Style="{StaticResource NavigationBarTitleFontStyle}"
-                       Text="GATT Server Detail" />
+                       Text="{Binding GattCharacteristic.CharacteristicItemModel.Name}" />
 
                 <iconize:IconLabel Margin="0"
                                    FontSize="{StaticResource IconLabelFontSize}"

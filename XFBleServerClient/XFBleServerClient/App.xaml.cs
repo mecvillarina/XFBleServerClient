@@ -33,6 +33,6 @@ namespace XFBleServerClient.Core
 
 		protected override void RegisterTypes(IContainerRegistry containerRegistry)
 		{
-		}
+        }
 	}
 }

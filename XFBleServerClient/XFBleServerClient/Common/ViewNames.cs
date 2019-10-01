@@ -10,5 +10,6 @@
 
 		public const string ClientDeviceListPage = "ClientDeviceListPage";
 		public const string ClientDeviceDetailPage = "ClientDeviceDetailPage";
-	}
+		public const string ClientDeviceCharacteristicsDetailPage = "ClientDeviceCharacteristicsDetailPage";
+    }
 }

@@ -17,159 +17,184 @@ using XFBleServerClient.Core.Providers;
 
 namespace XFBleServerClient.Core.ViewModels
 {
-	public class ClientDeviceDetailPageViewModel : ViewModelBase
-	{
-		public ClientDeviceDetailPageViewModel(INavigationService navigationService) : base(navigationService)
-		{
-			this.BackCommand = new DelegateCommand(async () => await OnBackCommandAsync());
-			this.ConnectCommand = new DelegateCommand(() => OnConnectCommand());
-		}
+    public class ClientDeviceDetailPageViewModel : ViewModelBase
+    {
+        public ClientDeviceDetailPageViewModel(INavigationService navigationService) : base(navigationService)
+        {
+            this.BackCommand = new DelegateCommand(async () => await OnBackCommandAsync());
+            this.ConnectCommand = new DelegateCommand(() => OnConnectCommand());
+            SelectGattCharacteristicCommand = new DelegateCommand<GattCharacteristicViewModel>(async (characteristic) => await OnSelectGattCharacteristicCommand(characteristic));
 
-		private IDevice _selectedDevice;
-		private List<GattServiceCharacteristicItemModel> _gattServiceCharacterItemModels;
+        }
 
-		private CompositeDisposable deactivateWith;
-		protected CompositeDisposable DeactivateWith
-		{
-			get
-			{
-				if (deactivateWith == null)
-				{
-					deactivateWith = new CompositeDisposable();
-				}
+        private IDevice _selectedDevice;
+        private List<GattServiceCharacteristicItemModel> _gattServiceCharacterItemModels;
 
-				return deactivateWith;
-			}
-		}
+        private CompositeDisposable deactivateWith;
+        protected CompositeDisposable DeactivateWith
+        {
+            get
+            {
+                if (deactivateWith == null)
+                {
+                    deactivateWith = new CompositeDisposable();
+                }
 
-		private string _connectMessage = "Connect";
-		public string ConnectMessage
-		{
-			get => _connectMessage;
-			set => SetProperty(ref _connectMessage, value);
-		}
-		public ObservableCollection<Group<GattCharacteristicViewModel>> GattCharacteristics { get; } = new ObservableCollection<Group<GattCharacteristicViewModel>>();
+                return deactivateWith;
+            }
+        }
 
-		public DelegateCommand BackCommand { get; private set; }
-		public DelegateCommand ConnectCommand { get; private set; }
+        private string _connectMessage = "Connect";
+        public string ConnectMessage
+        {
+            get => _connectMessage;
+            set => SetProperty(ref _connectMessage, value);
+        }
 
-		private async Task OnBackCommandAsync()
-		{
-			_selectedDevice.CancelConnection();
-			await this.NavigationService.GoBackAsync();
-		}
+        private ObservableCollection<Group<GattCharacteristicViewModel>> _gattCharacteristics;
+        public ObservableCollection<Group<GattCharacteristicViewModel>> GattCharacteristics
+        {
+            get => _gattCharacteristics;
+            set => SetProperty(ref _gattCharacteristics, value);
+        }
 
-		private void OnConnectCommand()
-		{
-			if (_selectedDevice.Status == ConnectionStatus.Disconnected)
-			{
-				_selectedDevice.CancelConnection();
-				_selectedDevice.Connect(new ConnectionConfig()
-				{
-					AndroidConnectionPriority = ConnectionPriority.Normal,
-					AutoConnect = true
-				});
-			}
-			else
-			{
-				_selectedDevice.CancelConnection();
-			}
-		}
+        public DelegateCommand BackCommand { get; private set; }
+        public DelegateCommand ConnectCommand { get; private set; }
+        public DelegateCommand<GattCharacteristicViewModel> SelectGattCharacteristicCommand { get; private set; }
 
-		public override void OnNavigatedTo(INavigationParameters parameters)
-		{
-			base.OnNavigatedTo(parameters);
+        private async Task OnBackCommandAsync()
+        {
+            _selectedDevice.CancelConnection();
+            await this.NavigationService.GoBackAsync();
+        }
 
-			if (parameters.ContainsKey(ParameterConstants.SelectedDevice))
-			{
-				_selectedDevice = parameters.GetValue<IDevice>(ParameterConstants.SelectedDevice);
-			}
+        private void OnConnectCommand()
+        {
+            if (_selectedDevice.Status == ConnectionStatus.Disconnected)
+            {
+                _selectedDevice.CancelConnection();
+                _selectedDevice.Connect(new ConnectionConfig()
+                {
+                    AndroidConnectionPriority = ConnectionPriority.Normal,
+                    AutoConnect = false
+                });
+            }
+            else
+            {
+                _selectedDevice.CancelConnection();
+            }
+        }
 
-			var gattServiceItemModel = GattServiceProvider.GetServices().Select(x =>
-			{
-				foreach (var characteristic in x.Characteristics)
-				{
-					characteristic.ServiceName = x.Name;
-				}
+        private async Task OnSelectGattCharacteristicCommand(GattCharacteristicViewModel characteristic)
+        {
+            var parameters = new NavigationParameters();
+            parameters.Add(ParameterConstants.SelectedGattCharacteristic, characteristic);
+            parameters.Add(ParameterConstants.SelectedDevice, _selectedDevice);
+            await this.NavigationService.NavigateAsync(ViewNames.ClientDeviceCharacteristicsDetailPage, parameters);
+        }
 
-				return x.Characteristics;
-			});
+        public override void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
 
-			_gattServiceCharacterItemModels = new List<GattServiceCharacteristicItemModel>();
+            if (parameters.ContainsKey(ParameterConstants.SelectedDevice))
+            {
+                _selectedDevice = parameters.GetValue<IDevice>(ParameterConstants.SelectedDevice);
+            }
 
-			foreach (var model in gattServiceItemModel)
-			{
-				_gattServiceCharacterItemModels.AddRange(model);
-			}
+            var gattServiceItemModel = GattServiceProvider.GetServices().Select(x =>
+            {
+                foreach (var characteristic in x.Characteristics)
+                {
+                    characteristic.ServiceName = x.Name;
+                }
 
-			_selectedDevice
-				.WhenStatusChanged()
-				.ObserveOn(RxApp.MainThreadScheduler)
-				.Subscribe(status =>
-				{
-					switch (status)
-					{
-						case ConnectionStatus.Connecting:
-							this.ConnectMessage = "Cancel Connection";
-							break;
+                return x.Characteristics;
+            });
 
-						case ConnectionStatus.Connected:
-							this.ConnectMessage = "Disconnect";
-							break;
+            _gattServiceCharacterItemModels = new List<GattServiceCharacteristicItemModel>();
 
-						case ConnectionStatus.Disconnected:
-							this.ConnectMessage = "Connect";
-							try
-							{
-								//this.GattCharacteristics.Clear();
-							}
-							catch (Exception ex)
-							{
-								Console.WriteLine(ex);
-							}
+            foreach (var model in gattServiceItemModel)
+            {
+                _gattServiceCharacterItemModels.AddRange(model);
+            }
 
-							break;
-					}
-				})
-				.DisposeWith(this.DeactivateWith);
 
-			_selectedDevice
-				.WhenAnyCharacteristicDiscovered()
-				.ObserveOn(RxApp.MainThreadScheduler)
-				.Subscribe(chs =>
-				{
-					try
-					{
-						Debug.WriteLine("Services:" + chs.Service.Uuid);
-						if (chs.Service.Uuid.ToString().StartsWith(AppConstants.GuidStartPad, StringComparison.CurrentCultureIgnoreCase))
-						{
-							var chsItemModel = _gattServiceCharacterItemModels.FirstOrDefault(x => x.CharacteristicUuid == chs.Uuid);
+            if (GattCharacteristics == null)
+            {
+                GattCharacteristics = new ObservableCollection<Group<GattCharacteristicViewModel>>();
+            }
 
-							var service = this.GattCharacteristics.FirstOrDefault(x => x.ShortName.Equals(chs.Service.Uuid.ToString()));
-							if (service == null)
-							{
-								service = new Group<GattCharacteristicViewModel>(
-									$"{chsItemModel.ServiceName}{Environment.NewLine}({chs.Service.Uuid})",
-									chs.Service.Uuid.ToString()
-								);
-								this.GattCharacteristics.Add(service);
-							}
+            _selectedDevice
+                .WhenStatusChanged()
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(status =>
+                {
+                    switch (status)
+                    {
+                        case ConnectionStatus.Connecting:
+                            this.ConnectMessage = "Cancel Connection";
+                            break;
 
-							if(!service.Any(x => x.Uuid == chs.Uuid))
-							{
-								service.Add(new GattCharacteristicViewModel(chs, chsItemModel));
-							}
-						}
-					}
+                        case ConnectionStatus.Connected:
+                            this.ConnectMessage = "Disconnect";
+                            break;
 
-					catch (Exception ex)
-					{
-						// eat it
-						Console.WriteLine(ex);
-					}
-				})
-				.DisposeWith(this.DeactivateWith);
-		}
+                        case ConnectionStatus.Disconnected:
+                            this.ConnectMessage = "Connect";
+                            try
+                            {
+                                //this.GattCharacteristics.Clear();
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex);
+                            }
 
-	}
+                            break;
+                    }
+                })
+                .DisposeWith(this.DeactivateWith);
+
+            _selectedDevice
+                .WhenAnyCharacteristicDiscovered()
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(chs =>
+                {
+                    try
+                    {
+                        Debug.WriteLine("Services:" + chs.Service.Uuid);
+                        var b = chs.Service.Uuid.ToString().ToUpper().StartsWith(AppConstants.GuidStartPad);
+                        Debug.WriteLine("Status:" + b);
+
+                        if (chs.Service.Uuid.ToString().ToUpper().StartsWith(AppConstants.GuidStartPad))
+                        {
+                            var chsItemModel = _gattServiceCharacterItemModels.FirstOrDefault(x => x.CharacteristicUuid == chs.Uuid);
+
+                            var service = this.GattCharacteristics.FirstOrDefault(x => x.ShortName.Equals(chs.Service.Uuid.ToString()));
+                            if (service == null)
+                            {
+                                service = new Group<GattCharacteristicViewModel>(
+                                    $"{chsItemModel.ServiceName}{Environment.NewLine}({chs.Service.Uuid})",
+                                    chs.Service.Uuid.ToString()
+                                );
+                                this.GattCharacteristics.Add(service);
+                            }
+
+                            if (!service.Any(x => x.Uuid == chs.Uuid))
+                            {
+                                service.Add(new GattCharacteristicViewModel(chs, chsItemModel));
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // eat it
+                        Console.WriteLine(ex);
+                    }
+                })
+                .DisposeWith(this.DeactivateWith);
+        }
+
+    }
 }

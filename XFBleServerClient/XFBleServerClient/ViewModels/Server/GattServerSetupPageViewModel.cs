@@ -14,13 +14,13 @@ using XFBleServerClient.Core.Providers;
 
 namespace XFBleServerClient.Core.ViewModels
 {
-	public class ServerSetupPageViewModel : ViewModelBase
+	public class GattServerSetupPageViewModel : ViewModelBase
 	{
 		private readonly IAdapter _adapter;
 		private readonly IDialogService _dialogService;
 		private readonly IUserDialogs _userDialogs;
 
-		public ServerSetupPageViewModel(INavigationService navigationService, IAdapter adapter, IDialogService dialogService, IUserDialogs userDialogs) : base(navigationService)
+		public GattServerSetupPageViewModel(INavigationService navigationService, IAdapter adapter, IDialogService dialogService, IUserDialogs userDialogs) : base(navigationService)
 		{
 			_adapter = adapter;
 			_dialogService = dialogService;
@@ -49,7 +49,7 @@ namespace XFBleServerClient.Core.ViewModels
 			set => SetProperty(ref _btnText, value);
 		}
 
-		private string _serverName = "MyServer";
+		private string _serverName = "My Server";
 		public string ServerName
 		{
 			get => _serverName;
@@ -85,6 +85,12 @@ namespace XFBleServerClient.Core.ViewModels
 			if (_adapter.Status != AdapterStatus.PoweredOn)
 			{
 				await _userDialogs.AlertAsync("Could not start GATT Server.  Adapter Status: " + _adapter.Status);
+
+                if (_adapter.CanOpenSettings())
+                {
+                    _adapter.OpenSettings();
+                }
+
 				return;
 			}
 

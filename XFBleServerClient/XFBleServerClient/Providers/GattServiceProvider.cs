@@ -24,20 +24,20 @@ namespace XFBleServerClient.Core.Providers
 					},
 			});
 
-			gattServices.Add(new GattServiceItemModel()
-			{
-				IsDeletable = false,
-				IsEditable = false,
-				Name = "Mathematical Operations",
-				ServiceUuid = new Guid($"{AppConstants.GuidStartPad}-F12CCFB0725C"),
-				Characteristics = new List<GattServiceCharacteristicItemModel>()
-					{
-						new GattServiceCharacteristicItemModel() { Name = "Addition",CharacteristicUuid = new Guid(AppConstants.GattCharMathematicalOperationsAddition), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
-						new GattServiceCharacteristicItemModel() { Name = "Subtraction",CharacteristicUuid = new Guid(AppConstants.GattCharMathematicalOperationsSubtraction), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
-						new GattServiceCharacteristicItemModel() { Name = "Multiplication",CharacteristicUuid = new Guid(AppConstants.GattCharMathematicalOperationsMultiplication), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
-						new GattServiceCharacteristicItemModel() { Name = "Division",CharacteristicUuid = new Guid(AppConstants.GattCharMathematicalOperationsDivision), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
-					}
-			});
+			//gattServices.Add(new GattServiceItemModel()
+			//{
+			//	IsDeletable = false,
+			//	IsEditable = false,
+			//	Name = "Mathematical Operations",
+			//	ServiceUuid = new Guid($"{AppConstants.GuidStartPad}-F12CCFB0725C"),
+			//	Characteristics = new List<GattServiceCharacteristicItemModel>()
+			//		{
+			//			new GattServiceCharacteristicItemModel() { Name = "Addition",CharacteristicUuid = new Guid(AppConstants.GattCharMathematicalOperationsAddition), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
+			//			new GattServiceCharacteristicItemModel() { Name = "Subtraction",CharacteristicUuid = new Guid(AppConstants.GattCharMathematicalOperationsSubtraction), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
+			//			new GattServiceCharacteristicItemModel() { Name = "Multiplication",CharacteristicUuid = new Guid(AppConstants.GattCharMathematicalOperationsMultiplication), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
+			//			new GattServiceCharacteristicItemModel() { Name = "Division",CharacteristicUuid = new Guid(AppConstants.GattCharMathematicalOperationsDivision), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
+			//		}
+			//});
 
 			gattServices.Add(new GattServiceItemModel()
 			{

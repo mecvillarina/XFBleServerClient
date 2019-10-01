@@ -50,7 +50,7 @@
     <CodesignKey>iPhone Developer: mark villarina (FAJYQ694NX)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignProvision>XC ch erni BLESc Development</CodesignProvision>
+    <CodesignProvision>BLE Server Client Development Provisioning</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
