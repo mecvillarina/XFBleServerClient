@@ -64,7 +64,8 @@ namespace XFBleServerClient.Core.ViewModels
 
         private async Task OnBackCommandAsync()
         {
-            _selectedDevice.CancelConnection();
+            _selectedDevice?.CancelConnection();
+            DeactivateWith?.Dispose();
             await this.NavigationService.GoBackAsync();
         }
 
@@ -97,104 +98,113 @@ namespace XFBleServerClient.Core.ViewModels
         {
             base.OnNavigatedTo(parameters);
 
-            if (parameters.ContainsKey(ParameterConstants.SelectedDevice))
+            if(parameters.GetNavigationMode() == NavigationMode.New)
             {
-                _selectedDevice = parameters.GetValue<IDevice>(ParameterConstants.SelectedDevice);
-            }
-
-            var gattServiceItemModel = GattServiceProvider.GetServices().Select(x =>
-            {
-                foreach (var characteristic in x.Characteristics)
+                if (parameters.ContainsKey(ParameterConstants.SelectedDevice))
                 {
-                    characteristic.ServiceName = x.Name;
+                    _selectedDevice = parameters.GetValue<IDevice>(ParameterConstants.SelectedDevice);
                 }
 
-                return x.Characteristics;
-            });
-
-            _gattServiceCharacterItemModels = new List<GattServiceCharacteristicItemModel>();
-
-            foreach (var model in gattServiceItemModel)
-            {
-                _gattServiceCharacterItemModels.AddRange(model);
-            }
-
-
-            if (GattCharacteristics == null)
-            {
-                GattCharacteristics = new ObservableCollection<Group<GattCharacteristicViewModel>>();
-            }
-
-            _selectedDevice
-                .WhenStatusChanged()
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(status =>
+                var gattServiceItemModel = GattServiceProvider.GetServices().Select(x =>
                 {
-                    switch (status)
+                    foreach (var characteristic in x.Characteristics)
                     {
-                        case ConnectionStatus.Connecting:
-                            this.ConnectMessage = "Cancel Connection";
-                            break;
+                        characteristic.ServiceName = x.Name;
+                    }
 
-                        case ConnectionStatus.Connected:
-                            this.ConnectMessage = "Disconnect";
-                            break;
+                    return x.Characteristics;
+                });
 
-                        case ConnectionStatus.Disconnected:
-                            this.ConnectMessage = "Connect";
-                            try
-                            {
+                _gattServiceCharacterItemModels = new List<GattServiceCharacteristicItemModel>();
+
+                foreach (var model in gattServiceItemModel)
+                {
+                    _gattServiceCharacterItemModels.AddRange(model);
+                }
+
+
+                if (GattCharacteristics == null)
+                {
+                    GattCharacteristics = new ObservableCollection<Group<GattCharacteristicViewModel>>();
+                }
+
+                _selectedDevice
+                    .WhenStatusChanged()
+                    .ObserveOn(RxApp.MainThreadScheduler)
+                    .Subscribe(status =>
+                    {
+                        switch (status)
+                        {
+                            case ConnectionStatus.Connecting:
+                                this.ConnectMessage = "Cancel Connection";
+                                break;
+
+                            case ConnectionStatus.Connected:
+                                this.ConnectMessage = "Disconnect";
+                                break;
+
+                            case ConnectionStatus.Disconnected:
+                                this.ConnectMessage = "Connect";
+                                try
+                                {
                                 //this.GattCharacteristics.Clear();
                             }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex);
-                            }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex);
+                                }
 
-                            break;
-                    }
-                })
-                .DisposeWith(this.DeactivateWith);
+                                break;
+                        }
+                    })
+                    .DisposeWith(this.DeactivateWith);
 
-            _selectedDevice
-                .WhenAnyCharacteristicDiscovered()
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(chs =>
-                {
-                    try
+                _selectedDevice
+                    .WhenAnyCharacteristicDiscovered()
+                    .ObserveOn(RxApp.MainThreadScheduler)
+                    .Subscribe(chs =>
                     {
-                        Debug.WriteLine("Services:" + chs.Service.Uuid);
-                        var b = chs.Service.Uuid.ToString().ToUpper().StartsWith(AppConstants.GuidStartPad);
-                        Debug.WriteLine("Status:" + b);
-
-                        if (chs.Service.Uuid.ToString().ToUpper().StartsWith(AppConstants.GuidStartPad))
+                        try
                         {
-                            var chsItemModel = _gattServiceCharacterItemModels.FirstOrDefault(x => x.CharacteristicUuid == chs.Uuid);
+                            Debug.WriteLine("Services:" + chs.Service.Uuid);
+                            var b = chs.Service.Uuid.ToString().ToUpper().StartsWith(AppConstants.GuidStartPad);
+                            Debug.WriteLine("Status:" + b);
 
-                            var service = this.GattCharacteristics.FirstOrDefault(x => x.ShortName.Equals(chs.Service.Uuid.ToString()));
-                            if (service == null)
+                            if (chs.Service.Uuid.ToString().ToUpper().StartsWith(AppConstants.GuidStartPad))
                             {
-                                service = new Group<GattCharacteristicViewModel>(
-                                    $"{chsItemModel.ServiceName}{Environment.NewLine}({chs.Service.Uuid})",
-                                    chs.Service.Uuid.ToString()
-                                );
-                                this.GattCharacteristics.Add(service);
-                            }
+                                var chsItemModel = _gattServiceCharacterItemModels.FirstOrDefault(x => x.CharacteristicUuid == chs.Uuid);
 
-                            if (!service.Any(x => x.Uuid == chs.Uuid))
-                            {
-                                service.Add(new GattCharacteristicViewModel(chs, chsItemModel));
+                                var service = this.GattCharacteristics.FirstOrDefault(x => x.ShortName.Equals(chs.Service.Uuid.ToString()));
+                                if (service == null)
+                                {
+                                    service = new Group<GattCharacteristicViewModel>(
+                                        $"{chsItemModel.ServiceName}{Environment.NewLine}({chs.Service.Uuid})",
+                                        chs.Service.Uuid.ToString()
+                                    );
+                                    this.GattCharacteristics.Add(service);
+                                }
+
+                                if (!service.Any(x => x.Uuid == chs.Uuid))
+                                {
+                                    service.Add(new GattCharacteristicViewModel(chs, chsItemModel));
+                                }
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
+                        catch (Exception ex)
+                        {
                         // eat it
                         Console.WriteLine(ex);
-                    }
-                })
-                .DisposeWith(this.DeactivateWith);
+                        }
+                    })
+                    .DisposeWith(this.DeactivateWith);
+            }
         }
 
+        public override void Destroy()
+        {
+            _selectedDevice?.CancelConnection();
+            DeactivateWith?.Dispose();
+            base.Destroy();
+        }
     }
 }

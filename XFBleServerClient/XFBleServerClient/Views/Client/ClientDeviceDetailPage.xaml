@@ -69,7 +69,6 @@
                        TextColor="{StaticResource Color.PrimaryGray1}" />
 
                 <ListView Grid.Row="2"
-                          BackgroundColor="Red"
                           HasUnevenRows="True"
                           IsGroupingEnabled="true"
                           ItemsSource="{Binding GattCharacteristics}"

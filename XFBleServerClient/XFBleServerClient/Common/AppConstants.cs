@@ -11,7 +11,7 @@ namespace XFBleServerClient.Core.Common
 
 		public const string GuidStartPad = "B78F4D10-7438-4CF5-A576";
 
-		public const string GattCharDefaultServiceReadDeviceGuid = "B78F4D11-7438-4CF5-A576-1370F02D74DE";
+		public const string GattCharDefaultServiceReadDevice = "B78F4D11-7438-4CF5-A576-1370F02D74DE";
 		public const string GattCharDefaultServiceSayExactWord = "B78F4D12-7438-4CF5-A576-1370F02D74DE";
 
 		public const string GattCharMathematicalOperationsAddition = "633C1281-A2D9-4A73-A5F3-F12CCFB0725C";

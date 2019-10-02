@@ -19,7 +19,7 @@ namespace XFBleServerClient.Core.Providers
 				ServiceUuid = new Guid($"{AppConstants.GuidStartPad}-1370F02D74DE"),
 				Characteristics = new List<GattServiceCharacteristicItemModel>()
 					{
-						new GattServiceCharacteristicItemModel() { Name = "Read Device Information", CharacteristicUuid = new Guid(AppConstants.GattCharDefaultServiceReadDeviceGuid), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read, Permissions = GattPermissions.Read },
+						new GattServiceCharacteristicItemModel() { Name = "Read Device Information", CharacteristicUuid = new Guid(AppConstants.GattCharDefaultServiceReadDevice), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read, Permissions = GattPermissions.Read },
 						new GattServiceCharacteristicItemModel() { Name = "Say Exact Word" , CharacteristicUuid = new Guid(AppConstants.GattCharDefaultServiceSayExactWord), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write}
 					},
 			});
