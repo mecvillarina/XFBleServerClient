@@ -98,7 +98,7 @@ namespace XFBleServerClient.Core.ViewModels
         {
             base.OnNavigatedTo(parameters);
 
-            if(parameters.GetNavigationMode() == NavigationMode.New)
+            if (parameters.GetNavigationMode() == NavigationMode.New)
             {
                 if (parameters.ContainsKey(ParameterConstants.SelectedDevice))
                 {
@@ -147,8 +147,8 @@ namespace XFBleServerClient.Core.ViewModels
                                 this.ConnectMessage = "Connect";
                                 try
                                 {
-                                //this.GattCharacteristics.Clear();
-                            }
+                                    //this.GattCharacteristics.Clear();
+                                }
                                 catch (Exception ex)
                                 {
                                     Console.WriteLine(ex);
@@ -159,14 +159,27 @@ namespace XFBleServerClient.Core.ViewModels
                     })
                     .DisposeWith(this.DeactivateWith);
 
+
+                //Do not remove this subscription, some miracle happens. 
+                _selectedDevice
+                    .WhenAnyDescriptorDiscovered()
+                   .ObserveOn(RxApp.MainThreadScheduler)
+                    .Subscribe(async desc =>
+                    {
+                        Debug.WriteLine("Descriptor Value: " + desc.Value);
+                    }).DisposeWith(this.DeactivateWith);
+
+
                 _selectedDevice
                     .WhenAnyCharacteristicDiscovered()
                     .ObserveOn(RxApp.MainThreadScheduler)
-                    .Subscribe(chs =>
+                    .Subscribe(async chs =>
                     {
                         try
                         {
-                            Debug.WriteLine("Services:" + chs.Service.Uuid);
+                            Debug.WriteLine("Services:" + chs.Service.Uuid.ToString());
+                            Debug.WriteLine("Chs Uuid:" + chs.Uuid.ToString());
+
                             var b = chs.Service.Uuid.ToString().ToUpper().StartsWith(AppConstants.GuidStartPad);
                             Debug.WriteLine("Status:" + b);
 
@@ -192,8 +205,8 @@ namespace XFBleServerClient.Core.ViewModels
                         }
                         catch (Exception ex)
                         {
-                        // eat it
-                        Console.WriteLine(ex);
+                            // eat it
+                            Console.WriteLine(ex);
                         }
                     })
                     .DisposeWith(this.DeactivateWith);

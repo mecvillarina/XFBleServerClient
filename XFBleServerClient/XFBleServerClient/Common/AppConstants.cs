@@ -22,7 +22,10 @@ namespace XFBleServerClient.Core.Common
 		public const string GattCharLocationTrackingAskMyLocation = "064B5B51-6ED8-403E-B158-B77111B5B49F";
 		public const string GattCharLocationTrackingReverseGeocoding = "064B5B52-6ED8-403E-B158-B77111B5B49F";
 
+        public const string DeviceVersion = "DeviceVersion";
+        public const string VersionNumber = "VersionNumber";
+        public const string Manufacturer = "Manufacturer";
+        public const string DeviceName = "DeviceName";
 
-
-	}
+    }
 }

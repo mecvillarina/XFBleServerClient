@@ -1,4 +1,5 @@
 ﻿using Plugin.BluetoothLE;
+using Plugin.DeviceInfo.Abstractions;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using XFBleServerClient.Core.Common;
 using XFBleServerClient.Core.ItemModels;
@@ -18,8 +20,12 @@ namespace XFBleServerClient.Core.ViewModels
     {
         public ClientDeviceCharacteristicsDetailPageViewModel(INavigationService navigationService) : base(navigationService)
         {
+
             this.BackCommand = new DelegateCommand(async () => await OnBackCommandAsync());
             this.ConnectCommand = new DelegateCommand(async () => await OnConnectCommandAsync());
+
+            DeactivateWith = new CompositeDisposable();
+            DeactivateCharacteristicWith = new CompositeDisposable();
         }
 
         private IDevice _selectedDevice;
@@ -38,30 +44,29 @@ namespace XFBleServerClient.Core.ViewModels
             set => SetProperty(ref _connectMessage, value);
         }
 
-        private CompositeDisposable _deactivateWith;
-        protected CompositeDisposable DeactivateWith
+        private string _resultStr;
+        public string ResultStr
         {
-            get
-            {
-                if (_deactivateWith == null)
-                {
-                    _deactivateWith = new CompositeDisposable();
-                }
-
-                return _deactivateWith;
-            }
+            get => _resultStr;
+            set => SetProperty(ref _resultStr, value);
         }
 
+        protected CompositeDisposable DeactivateWith { get; set; }
         protected CompositeDisposable DeactivateCharacteristicWith { get; set; }
 
         public DelegateCommand BackCommand { get; private set; }
         public DelegateCommand ConnectCommand { get; private set; }
         private async Task OnBackCommandAsync()
         {
+            Dispose();
+            await this.NavigationService.GoBackAsync();
+        }
+
+        private void Dispose()
+        {
             _selectedDevice?.CancelConnection();
             DeactivateCharacteristicWith?.Dispose();
             DeactivateWith?.Dispose();
-            await this.NavigationService.GoBackAsync();
         }
 
         private async Task OnConnectCommandAsync()
@@ -72,25 +77,42 @@ namespace XFBleServerClient.Core.ViewModels
                 AndroidConnectionPriority = ConnectionPriority.Normal,
                 AutoConnect = false
             });
+
+          
         }
 
-        private async Task PerformTask()
+        private async Task PerformTask(IGattCharacteristic gattCharacteristic)
         {
-            switch (GattCharacteristic.Characteristic.Uuid.ToString().ToUpper())
+            switch (gattCharacteristic.Uuid.ToString().ToUpper())
             {
-                case AppConstants.GattCharDefaultServiceReadDevice: await ReadDevice(); break;
+                case AppConstants.GattCharDefaultServiceReadDevice: await ReadDevice(gattCharacteristic); break;
                 case AppConstants.GattCharDefaultServiceSayExactWord: break;
                 case AppConstants.GattCharLocationTrackingAskMyLocation: break;
                 case AppConstants.GattCharLocationTrackingReverseGeocoding: break;
             }
         }
 
-        private async Task ReadDevice()
+        private async Task ReadDevice(IGattCharacteristic gattCharacteristic)
         {
-            GattCharacteristic.Characteristic.Read().Subscribe((result) =>
-            {
+            ResultStr = string.Empty;
 
-            }).DisposeWith(DeactivateCharacteristicWith);
+            var gattWriteResult = await gattCharacteristic.Write(Encoding.UTF8.GetBytes(AppConstants.DeviceVersion));
+            var gattReadResult = await gattCharacteristic.Read();
+            ResultStr = string.Concat(ResultStr, System.Text.Encoding.UTF8.GetString(gattReadResult.Data), Environment.NewLine);
+
+            gattWriteResult = await gattCharacteristic.Write(Encoding.UTF8.GetBytes(AppConstants.VersionNumber));
+            gattReadResult = await gattCharacteristic.Read();
+            ResultStr = string.Concat(ResultStr, System.Text.Encoding.UTF8.GetString(gattReadResult.Data), Environment.NewLine);
+
+            gattWriteResult = await gattCharacteristic.Write(Encoding.UTF8.GetBytes(AppConstants.Manufacturer));
+            gattReadResult = await gattCharacteristic.Read();
+            ResultStr = string.Concat(ResultStr, System.Text.Encoding.UTF8.GetString(gattReadResult.Data), Environment.NewLine);
+
+            gattWriteResult = await gattCharacteristic.Write(Encoding.UTF8.GetBytes(AppConstants.DeviceName));
+            gattReadResult = await gattCharacteristic.Read();
+            ResultStr = string.Concat(ResultStr, System.Text.Encoding.UTF8.GetString(gattReadResult.Data), Environment.NewLine);
+
+            _selectedDevice?.CancelConnection();
         }
 
         public override void OnNavigatedTo(INavigationParameters parameters)
@@ -108,7 +130,7 @@ namespace XFBleServerClient.Core.ViewModels
                        switch (status)
                        {
                            case ConnectionStatus.Connecting:
-                               this.ConnectMessage = "Connecting...";
+                               this.ConnectMessage = "Executing...";
                                break;
 
                            case ConnectionStatus.Connected:
@@ -116,12 +138,18 @@ namespace XFBleServerClient.Core.ViewModels
                                    this.ConnectMessage = "Stop";
                                    DeactivateCharacteristicWith?.Dispose();
                                    DeactivateCharacteristicWith = new CompositeDisposable();
-                                   await PerformTask();
+
+                                   Guid serviceUuid = GattCharacteristic.Uuid;
+                                   Guid characteristicUuid = GattCharacteristic.Characteristic.Uuid;
+
+                                   var gattCharacteristics =  await _selectedDevice.WhenKnownCharacteristicsDiscovered(serviceUuid, characteristicUuid);
+
+                                   await PerformTask(gattCharacteristics);
                                }
                                break;
 
                            case ConnectionStatus.Disconnected:
-                               this.ConnectMessage = "Start";
+                               this.ConnectMessage = "Execute";
                                break;
                        }
                    })
@@ -130,9 +158,7 @@ namespace XFBleServerClient.Core.ViewModels
 
         public override void Destroy()
         {
-            _selectedDevice?.CancelConnection();
-            DeactivateCharacteristicWith?.Dispose();
-            DeactivateWith?.Dispose();
+            Dispose();
             base.Destroy();
         }
     }

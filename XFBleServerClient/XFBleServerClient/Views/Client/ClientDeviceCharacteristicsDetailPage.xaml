@@ -67,6 +67,9 @@
                             Text="{Binding ConnectMessage}" />
                 </StackLayout>
 
+                <Grid Grid.Row="1">
+                    <Label Text="{Binding ResultStr}" />
+                </Grid>
 
             </Grid>
 

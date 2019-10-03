@@ -1,5 +1,7 @@
 ﻿using Acr.UserDialogs;
 using Plugin.BluetoothLE;
+using Plugin.DeviceInfo;
+using Plugin.DeviceInfo.Abstractions;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using Prism;
@@ -72,6 +74,7 @@ namespace XFBleServerClient.Shared
 			container.RegisterInstance<IPermissions>(CrossPermissions.Current);
 			container.RegisterInstance<IAdapter>(CrossBleAdapter.Current);
 			container.RegisterInstance<IUserDialogs>(UserDialogs.Instance);
+            container.RegisterInstance<IDeviceInfo>(CrossDeviceInfo.Current);
 		}
 	}
 }

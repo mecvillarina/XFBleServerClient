@@ -14,7 +14,7 @@ namespace XFBleServerClient.Core.ItemModels
 			this.CharacteristicItemModel = characteristicItemModel;
 		}
 
-		public IGattCharacteristic Characteristic { get; }
+		public IGattCharacteristic Characteristic { get; set; }
 		public GattServiceCharacteristicItemModel CharacteristicItemModel { get; }
 
 		private string _value;
