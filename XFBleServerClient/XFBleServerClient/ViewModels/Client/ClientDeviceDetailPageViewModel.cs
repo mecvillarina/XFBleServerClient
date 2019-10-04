@@ -88,6 +88,9 @@ namespace XFBleServerClient.Core.ViewModels
 
         private async Task OnSelectGattCharacteristicCommand(GattCharacteristicViewModel characteristic)
         {
+            _selectedDevice?.CancelConnection();
+            DeactivateWith?.Dispose();
+
             var parameters = new NavigationParameters();
             parameters.Add(ParameterConstants.SelectedGattCharacteristic, characteristic);
             parameters.Add(ParameterConstants.SelectedDevice, _selectedDevice);

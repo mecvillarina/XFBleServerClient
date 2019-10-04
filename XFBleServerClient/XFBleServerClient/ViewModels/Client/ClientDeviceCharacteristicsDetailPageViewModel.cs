@@ -6,6 +6,7 @@ using Prism.Navigation;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -22,13 +23,20 @@ namespace XFBleServerClient.Core.ViewModels
         {
 
             this.BackCommand = new DelegateCommand(async () => await OnBackCommandAsync());
-            this.ConnectCommand = new DelegateCommand(async () => await OnConnectCommandAsync());
+            this.ConnectCommand = new DelegateCommand(() => OnConnectCommand(), () => CanExecuteConnectCommand).ObservesProperty(() => CanExecuteConnectCommand);
 
             DeactivateWith = new CompositeDisposable();
             DeactivateCharacteristicWith = new CompositeDisposable();
         }
 
         private IDevice _selectedDevice;
+
+        private Guid _serviceGuid;
+        private Guid _characteristicGuid;
+        private IGattCharacteristic _characteristic;
+
+        protected CompositeDisposable DeactivateWith { get; set; }
+        protected CompositeDisposable DeactivateCharacteristicWith { get; set; }
 
         private GattCharacteristicViewModel _gattCharacteristic;
         public GattCharacteristicViewModel GattCharacteristic
@@ -51,8 +59,26 @@ namespace XFBleServerClient.Core.ViewModels
             set => SetProperty(ref _resultStr, value);
         }
 
-        protected CompositeDisposable DeactivateWith { get; set; }
-        protected CompositeDisposable DeactivateCharacteristicWith { get; set; }
+        private bool _canExecuteConnectCommand = true;
+        public bool CanExecuteConnectCommand
+        {
+            get => _canExecuteConnectCommand;
+            set => SetProperty(ref _canExecuteConnectCommand, value);
+        }
+
+        private bool _showWordEntry;
+        public bool ShowWordEntry
+        {
+            get => _showWordEntry;
+            set => SetProperty(ref _showWordEntry, value);
+        }
+
+        private string _wordEntry = string.Empty;
+        public string WordEntry
+        {
+            get => _wordEntry;
+            set => SetProperty(ref _wordEntry, value);
+        }
 
         public DelegateCommand BackCommand { get; private set; }
         public DelegateCommand ConnectCommand { get; private set; }
@@ -69,7 +95,7 @@ namespace XFBleServerClient.Core.ViewModels
             DeactivateWith?.Dispose();
         }
 
-        private async Task OnConnectCommandAsync()
+        private void OnConnectCommand()
         {
             _selectedDevice.CancelConnection();
             _selectedDevice.Connect(new ConnectionConfig()
@@ -77,25 +103,26 @@ namespace XFBleServerClient.Core.ViewModels
                 AndroidConnectionPriority = ConnectionPriority.Normal,
                 AutoConnect = false
             });
-
-          
         }
 
         private async Task PerformTask(IGattCharacteristic gattCharacteristic)
         {
-            switch (gattCharacteristic.Uuid.ToString().ToUpper())
+            if (gattCharacteristic != null)
             {
-                case AppConstants.GattCharDefaultServiceReadDevice: await ReadDevice(gattCharacteristic); break;
-                case AppConstants.GattCharDefaultServiceSayExactWord: break;
-                case AppConstants.GattCharLocationTrackingAskMyLocation: break;
-                case AppConstants.GattCharLocationTrackingReverseGeocoding: break;
+                ResultStr = string.Empty;
+
+                switch (gattCharacteristic.Uuid.ToString().ToUpper())
+                {
+                    case AppConstants.GattCharDefaultServiceReadDevice: await ReadDevice(gattCharacteristic); break;
+                    case AppConstants.GattCharDefaultServiceSayExactWord: await SayExactWord(gattCharacteristic); break;
+                    case AppConstants.GattCharLocationTrackingAskMyLocation: break;
+                    case AppConstants.GattCharLocationTrackingReverseGeocoding: break;
+                }
             }
         }
 
         private async Task ReadDevice(IGattCharacteristic gattCharacteristic)
         {
-            ResultStr = string.Empty;
-
             var gattWriteResult = await gattCharacteristic.Write(Encoding.UTF8.GetBytes(AppConstants.DeviceVersion));
             var gattReadResult = await gattCharacteristic.Read();
             ResultStr = string.Concat(ResultStr, System.Text.Encoding.UTF8.GetString(gattReadResult.Data), Environment.NewLine);
@@ -115,12 +142,24 @@ namespace XFBleServerClient.Core.ViewModels
             _selectedDevice?.CancelConnection();
         }
 
+        private async Task SayExactWord(IGattCharacteristic gattCharacteristic)
+        {
+            var gattWriteResult = await gattCharacteristic.Write(Encoding.UTF8.GetBytes(WordEntry));
+            var gattReadResult = await gattCharacteristic.Read();
+            ResultStr = string.Concat(ResultStr, System.Text.Encoding.UTF8.GetString(gattReadResult.Data), Environment.NewLine);
+        }
+
         public override void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
 
             _selectedDevice = parameters.GetValue<IDevice>(ParameterConstants.SelectedDevice);
             GattCharacteristic = parameters.GetValue<GattCharacteristicViewModel>(ParameterConstants.SelectedGattCharacteristic);
+
+            _serviceGuid = GattCharacteristic.ServiceUuid;
+            _characteristicGuid = GattCharacteristic.Characteristic.Uuid;
+
+            InitializeUI();
 
             _selectedDevice
                    .WhenStatusChanged()
@@ -135,25 +174,51 @@ namespace XFBleServerClient.Core.ViewModels
 
                            case ConnectionStatus.Connected:
                                {
-                                   this.ConnectMessage = "Stop";
+                                   CanExecuteConnectCommand = false;
+                                   //this.ConnectMessage = "Stop";
                                    DeactivateCharacteristicWith?.Dispose();
                                    DeactivateCharacteristicWith = new CompositeDisposable();
-
-                                   Guid serviceUuid = GattCharacteristic.Uuid;
-                                   Guid characteristicUuid = GattCharacteristic.Characteristic.Uuid;
-
-                                   var gattCharacteristics =  await _selectedDevice.WhenKnownCharacteristicsDiscovered(serviceUuid, characteristicUuid);
-
-                                   await PerformTask(gattCharacteristics);
+                                   _characteristic = null;
+                                   await _selectedDevice.DiscoverServices();
                                }
                                break;
 
                            case ConnectionStatus.Disconnected:
                                this.ConnectMessage = "Execute";
+                               CanExecuteConnectCommand = true;
                                break;
                        }
                    })
                    .DisposeWith(this.DeactivateWith);
+
+            _selectedDevice
+                .WhenAnyCharacteristicDiscovered()
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(async chs =>
+                {
+                    var b = chs.Service.Uuid.ToString().ToUpper().Equals(_serviceGuid.ToString().ToUpper()) && chs.Uuid.ToString().ToUpper().Equals(_characteristicGuid.ToString().ToUpper());
+                    Debug.WriteLine("Status:" + b);
+                    Debug.WriteLine("Charac Guid:" + chs.Uuid.ToString().ToUpper());
+                    Debug.WriteLine("Service Guid:" + chs.Service.Uuid.ToString().ToUpper());
+
+                    Debug.WriteLine("My Charac Guid" + _characteristicGuid.ToString().ToUpper());
+                    Debug.WriteLine("My Service Guid" + _serviceGuid.ToString().ToUpper());
+                    if (chs.Uuid.Equals(_characteristicGuid) && chs.Service.Uuid.Equals(_serviceGuid))
+                    {
+                        _characteristic = chs;
+                        await PerformTask(_characteristic);
+                    }
+                })
+                .DisposeWith(this.DeactivateWith);
+        }
+
+        private void InitializeUI()
+        {
+            ShowWordEntry = false;
+            if (_characteristicGuid.ToString().ToUpper().Equals(AppConstants.GattCharDefaultServiceSayExactWord.ToUpper()))
+            {
+                ShowWordEntry = true;
+            }
         }
 
         public override void Destroy()

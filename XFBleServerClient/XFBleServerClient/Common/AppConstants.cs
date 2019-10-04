@@ -26,6 +26,7 @@ namespace XFBleServerClient.Core.Common
         public const string VersionNumber = "VersionNumber";
         public const string Manufacturer = "Manufacturer";
         public const string DeviceName = "DeviceName";
+        public const string SayExactWord = "SayExactWord";
 
     }
 }

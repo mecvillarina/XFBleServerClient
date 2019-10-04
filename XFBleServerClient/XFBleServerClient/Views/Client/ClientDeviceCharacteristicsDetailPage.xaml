@@ -67,8 +67,29 @@
                             Text="{Binding ConnectMessage}" />
                 </StackLayout>
 
-                <Grid Grid.Row="1">
-                    <Label Text="{Binding ResultStr}" />
+                <Grid Grid.Row="1"
+                      RowSpacing="4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <StackLayout Spacing="4">
+                        <Label FontFamily="{StaticResource RalewaySemiBoldFontFamily}"
+                               FontSize="14"
+                               Text="State some phrase"
+                               TextColor="{StaticResource Color.PrimaryGray1}" />
+
+                        <Entry FontFamily="{StaticResource RalewayFontFamily}"
+                               IsVisible="{Binding ShowWordEntry}"
+                               MaxLength="20"
+                               Text="{Binding WordEntry}"
+                               TextColor="{StaticResource Color.PrimaryGray1}"
+                               VerticalOptions="CenterAndExpand"
+                               Visual="Default" />
+                    </StackLayout>
+
+                    <Label Grid.Row="1"
+                           Text="{Binding ResultStr}" />
                 </Grid>
 
             </Grid>

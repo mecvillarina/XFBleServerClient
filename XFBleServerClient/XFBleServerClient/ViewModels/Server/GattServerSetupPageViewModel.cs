@@ -195,7 +195,7 @@ namespace XFBleServerClient.Core.ViewModels
             switch (model.CharacteristicUuid.ToString().ToUpper())
             {
                 case AppConstants.GattCharDefaultServiceReadDevice: GattCharReadDevice(characteristic); break;
-                case AppConstants.GattCharDefaultServiceSayExactWord: break;
+                case AppConstants.GattCharDefaultServiceSayExactWord: GattCharSayExactWord(characteristic); break;
                 case AppConstants.GattCharLocationTrackingAskMyLocation: break;
                 case AppConstants.GattCharLocationTrackingReverseGeocoding: break;
             }
@@ -205,8 +205,6 @@ namespace XFBleServerClient.Core.ViewModels
         {
             characteristic.WhenWriteReceived().Subscribe(writeRequest =>
             {
-                //string deviceInfo = _deviceInfoUtil.Version + "|" + _deviceInfoUtil.VersionNumber + "|" + _deviceInfoUtil.Manufacturer + "|" + _deviceInfoUtil.DeviceName;
-                //writeRequest.Value = Encoding.UTF8.GetBytes(_deviceInfoUtil.Version);
                 _currentWriteCommand = Encoding.UTF8.GetString(writeRequest.Value);
                 writeRequest.Status = GattStatus.Success;
 
@@ -222,6 +220,23 @@ namespace XFBleServerClient.Core.ViewModels
                     case AppConstants.DeviceName: readRequest.Value = Encoding.UTF8.GetBytes(_deviceInfoUtil.DeviceName); break;
                 }
 
+                readRequest.Status = GattStatus.Success;
+
+            }).DisposeWith(DeactivateCharacteristicWith);
+        }
+
+        void GattCharSayExactWord(Plugin.BluetoothLE.Server.IGattCharacteristic characteristic)
+        {
+            characteristic.WhenWriteReceived().Subscribe(writeRequest =>
+            {
+                _currentWriteCommand = Encoding.UTF8.GetString(writeRequest.Value);
+                writeRequest.Status = GattStatus.Success;
+
+            }).DisposeWith(DeactivateCharacteristicWith);
+
+            characteristic.WhenReadReceived().Subscribe(readRequest =>
+            {
+                readRequest.Value = Encoding.UTF8.GetBytes(_currentWriteCommand);
                 readRequest.Status = GattStatus.Success;
 
             }).DisposeWith(DeactivateCharacteristicWith);
