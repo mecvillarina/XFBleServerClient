@@ -47,7 +47,7 @@ namespace XFBleServerClient.Core.Providers
                 ServiceUuid = new Guid($"{AppConstants.GuidStartPad}-B77111B5B49F"),
                 Characteristics = new List<GattServiceCharacteristicItemModel>()
                     {
-                        new GattServiceCharacteristicItemModel() { Name = "Ask my location", CharacteristicUuid = new Guid(AppConstants.GattCharLocationTrackingAskMyLocation), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read, Permissions = GattPermissions.Read| GattPermissions.Write },
+                        new GattServiceCharacteristicItemModel() { Name = "Ask my location", CharacteristicUuid = new Guid(AppConstants.GattCharLocationTrackingAskMyLocation), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read| CharacteristicProperties.Write, Permissions = GattPermissions.Read| GattPermissions.Write },
                         new GattServiceCharacteristicItemModel() { Name = "Reverse Geocoding",CharacteristicUuid = new Guid(AppConstants.GattCharLocationTrackingReverseGeocoding), Properties = CharacteristicProperties.Notify | CharacteristicProperties.Read  | CharacteristicProperties.Write, Permissions = GattPermissions.Read | GattPermissions.Write },
                     }
             });

@@ -251,11 +251,11 @@ namespace XFBleServerClient.Core.ViewModels
 
         void GattCharAskLocation(Plugin.BluetoothLE.Server.IGattCharacteristic characteristic)
         {
-            characteristic.WhenReadReceived().Subscribe(async readRequest =>
+            characteristic.WhenReadReceived().Subscribe(readRequest =>
             {
-                var location = await _geolocatorUtil.GetPositionAsync();
+                var location = _geolocatorUtil.GetPositionAsync().Result;
 
-                string locationStr = $"{location.Latitude.ToString("N3")}{Environment.NewLine}{location.Longitude.ToString("N3")}";
+                string locationStr = $"{location.Latitude.ToString("N3")}|{location.Longitude.ToString("N3")}";
 
                 readRequest.Value = Encoding.UTF8.GetBytes(locationStr);
                 readRequest.Status = GattStatus.Success;
@@ -272,12 +272,12 @@ namespace XFBleServerClient.Core.ViewModels
 
             }).DisposeWith(this.DeactivateCharacteristicWith);
 
-            characteristic.WhenReadReceived().Subscribe(async readRequest =>
+            characteristic.WhenReadReceived().Subscribe(readRequest =>
             {
                 double latitude =  Convert.ToDouble(_locationStrRequest.Split('|')[0]);
                 double longitude = Convert.ToDouble(_locationStrRequest.Split('|')[1]);
 
-                string address = await _locationManager.GetLocationAddress(latitude, longitude);
+                string address = _locationManager.GetLocationAddress(latitude, longitude).Result;
                 address = address.Substring(0, 20);
 
                 readRequest.Value = Encoding.UTF8.GetBytes(address);
