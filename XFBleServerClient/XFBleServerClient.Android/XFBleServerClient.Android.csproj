@@ -85,6 +85,9 @@
     <PackageReference Include="Xam.Plugin.DeviceInfo">
       <Version>4.1.1</Version>
     </PackageReference>
+    <PackageReference Include="Xam.Plugin.Geolocator">
+      <Version>4.5.0.6</Version>
+    </PackageReference>
     <PackageReference Include="Xam.Plugin.Iconize">
       <Version>3.5.0.129</Version>
     </PackageReference>
@@ -178,6 +181,10 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\XFBleServerClient.Managers\XFBleServerClient.Managers.csproj">
+      <Project>{8c0c65d1-005f-4df2-8de4-19975bfc467c}</Project>
+      <Name>XFBleServerClient.Managers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XFBleServerClient\XFBleServerClient.Core.csproj">
       <Project>{A982CCF4-5810-4AB5-866B-84EB922248BF}</Project>
       <Name>XFBleServerClient.Core</Name>
