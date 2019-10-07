@@ -31,8 +31,8 @@ namespace XFBleServerClient.iOS
 			ConfigureContainer();
 			LoadApplication(_coreApp);
 
-			return base.FinishedLaunching(app, options);
-		}
+            return base.FinishedLaunching(app, options);
+        }
 
 		private void ConfigureContainer()
 		{
