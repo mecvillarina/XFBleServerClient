@@ -118,10 +118,10 @@
                                                FontSize="14"
                                                Text="{Binding Description}"
                                                TextColor="{StaticResource Color.PrimaryGray1}" />
-                                        <Label FontFamily="{StaticResource RalewayLightFontFamily}"
+                                        <!--<Label FontFamily="{StaticResource RalewayLightFontFamily}"
                                                FontSize="12"
                                                Text="{Binding Uuid, StringFormat='UUID: {0}'}"
-                                               TextColor="{StaticResource Color.PrimaryGray1}" />
+                                               TextColor="{StaticResource Color.PrimaryGray1}" />-->
                                         <Label FontFamily="{StaticResource RalewayLightFontFamily}"
                                                FontSize="12"
                                                Text="{Binding Properties, StringFormat='Properties: {0}'}"

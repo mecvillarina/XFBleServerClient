@@ -57,11 +57,10 @@
                            FontSize="12"
                            Text="{Binding GattCharacteristic.CharacteristicItemModel.Properties, StringFormat='Properties: {0}'}"
                            TextColor="{StaticResource Color.PrimaryGray1}" />
-                    <Label FontFamily="{StaticResource RalewayLightFontFamily}"
+                    <!--<Label FontFamily="{StaticResource RalewayLightFontFamily}"
                            FontSize="12"
                            Text="{Binding GattCharacteristic.CharacteristicItemModel.Uuid, StringFormat='Properties: {0}'}"
-                           TextColor="{StaticResource Color.PrimaryGray1}" />
-
+                           TextColor="{StaticResource Color.PrimaryGray1}" />-->
                     <Button BackgroundColor="{StaticResource Color.PrimaryBlue}"
                             Command="{Binding ConnectCommand}"
                             Text="{Binding ConnectMessage}" />
