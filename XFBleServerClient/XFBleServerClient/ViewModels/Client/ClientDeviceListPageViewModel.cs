@@ -111,7 +111,7 @@ namespace XFBleServerClient.Core.ViewModels
 							}
 
 							list = list.GroupBy(x => x.Uuid).Select(x => x.FirstOrDefault()).ToList();
-							list = list.Where(x => !string.IsNullOrEmpty(x.Name)).ToList();
+							//list = list.Where(x => !string.IsNullOrEmpty(x.Name)).ToList();
 							//list = list.Where(x => x.Name.ToLower().Contains("biral_")).ToList();
 
 							if (list.Any())

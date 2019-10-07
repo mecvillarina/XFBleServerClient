@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using Plugin.Permissions.Abstractions;
+using Prism.Commands;
 using Prism.Navigation;
 using System.Threading.Tasks;
 using XFBleServerClient.Core.Common;
@@ -7,9 +8,13 @@ namespace XFBleServerClient.Core.ViewModels
 {
 	public class LandingPageViewModel : ViewModelBase
 	{
-		public LandingPageViewModel(INavigationService navigationService)
+        private readonly IPermissions _permissionsUtil;
+
+		public LandingPageViewModel(INavigationService navigationService, IPermissions permissionsUtil)
 			: base(navigationService)
 		{
+            _permissionsUtil = permissionsUtil;
+
 			this.NavigateCommand = new DelegateCommand<string>(async (selection) => await ExecuteNavigateCommand(selection));
 		}
 
@@ -28,6 +33,8 @@ namespace XFBleServerClient.Core.ViewModels
 				page = ViewNames.ClientDeviceListPage;
 			}
 
+            await CheckPermissionAsync();
+
 			var s = await this.NavigationService.NavigateAsync(page);
 
 			if (!s.Success)
@@ -35,6 +42,11 @@ namespace XFBleServerClient.Core.ViewModels
 
 			}
 		}
+
+        private async Task CheckPermissionAsync()
+        {
+            await _permissionsUtil.RequestPermissionsAsync(new Permission[] { Permission.Location});
+        }
 
 	}
 }

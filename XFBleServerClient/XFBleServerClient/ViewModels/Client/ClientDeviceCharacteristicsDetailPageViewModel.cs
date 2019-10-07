@@ -1,13 +1,10 @@
 ﻿using Plugin.BluetoothLE;
-using Plugin.DeviceInfo.Abstractions;
+using Plugin.Geolocator.Abstractions;
 using Prism.Commands;
-using Prism.Mvvm;
 using Prism.Navigation;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text;
@@ -19,14 +16,16 @@ namespace XFBleServerClient.Core.ViewModels
 {
     public class ClientDeviceCharacteristicsDetailPageViewModel : ViewModelBase
     {
-        public ClientDeviceCharacteristicsDetailPageViewModel(INavigationService navigationService) : base(navigationService)
+        private readonly IGeolocator _geolocatorUtil;
+        public ClientDeviceCharacteristicsDetailPageViewModel(INavigationService navigationService, IGeolocator geolocatorUtil) : base(navigationService)
         {
+            _geolocatorUtil = geolocatorUtil;
 
             this.BackCommand = new DelegateCommand(async () => await OnBackCommandAsync());
-            this.ConnectCommand = new DelegateCommand(() => OnConnectCommand(), () => CanExecuteConnectCommand).ObservesProperty(() => CanExecuteConnectCommand);
+            this.ConnectCommand = new DelegateCommand(() => OnConnectCommand(), () => this.CanExecuteConnectCommand).ObservesProperty(() => this.CanExecuteConnectCommand);
 
-            DeactivateWith = new CompositeDisposable();
-            DeactivateCharacteristicWith = new CompositeDisposable();
+            this.DeactivateWith = new CompositeDisposable();
+            this.DeactivateCharacteristicWith = new CompositeDisposable();
         }
 
         private IDevice _selectedDevice;
@@ -80,6 +79,27 @@ namespace XFBleServerClient.Core.ViewModels
             set => SetProperty(ref _wordEntry, value);
         }
 
+        private bool _showLocationEntry;
+        public bool ShowLocationEntry
+        {
+            get => _showLocationEntry;
+            set => SetProperty(ref _showLocationEntry, value);
+        }
+
+        private double _latitude;
+        public double Latitude
+        {
+            get => _latitude;
+            set => SetProperty(ref _latitude, value);
+        }
+
+        private double _longitude;
+        public double Longitude
+        {
+            get => _longitude;
+            set => SetProperty(ref _longitude, value);
+        }
+
         public DelegateCommand BackCommand { get; private set; }
         public DelegateCommand ConnectCommand { get; private set; }
         private async Task OnBackCommandAsync()
@@ -91,8 +111,8 @@ namespace XFBleServerClient.Core.ViewModels
         private void Dispose()
         {
             _selectedDevice?.CancelConnection();
-            DeactivateCharacteristicWith?.Dispose();
-            DeactivateWith?.Dispose();
+            this.DeactivateCharacteristicWith?.Dispose();
+            this.DeactivateWith?.Dispose();
         }
 
         private void OnConnectCommand()
@@ -109,14 +129,14 @@ namespace XFBleServerClient.Core.ViewModels
         {
             if (gattCharacteristic != null)
             {
-                ResultStr = string.Empty;
+                this.ResultStr = string.Empty;
 
                 switch (gattCharacteristic.Uuid.ToString().ToUpper())
                 {
                     case AppConstants.GattCharDefaultServiceReadDevice: await ReadDevice(gattCharacteristic); break;
                     case AppConstants.GattCharDefaultServiceSayExactWord: await SayExactWord(gattCharacteristic); break;
-                    case AppConstants.GattCharLocationTrackingAskMyLocation: break;
-                    case AppConstants.GattCharLocationTrackingReverseGeocoding: break;
+                    case AppConstants.GattCharLocationTrackingAskMyLocation: await AskLocation(gattCharacteristic); break;
+                    case AppConstants.GattCharLocationTrackingReverseGeocoding: await GetLocationName(gattCharacteristic); break;
                 }
             }
         }
@@ -125,41 +145,62 @@ namespace XFBleServerClient.Core.ViewModels
         {
             var gattWriteResult = await gattCharacteristic.Write(Encoding.UTF8.GetBytes(AppConstants.DeviceVersion));
             var gattReadResult = await gattCharacteristic.Read();
-            ResultStr = string.Concat(ResultStr, System.Text.Encoding.UTF8.GetString(gattReadResult.Data), Environment.NewLine);
+            this.ResultStr = string.Concat(this.ResultStr, System.Text.Encoding.UTF8.GetString(gattReadResult.Data), Environment.NewLine);
 
             gattWriteResult = await gattCharacteristic.Write(Encoding.UTF8.GetBytes(AppConstants.VersionNumber));
             gattReadResult = await gattCharacteristic.Read();
-            ResultStr = string.Concat(ResultStr, System.Text.Encoding.UTF8.GetString(gattReadResult.Data), Environment.NewLine);
+            this.ResultStr = string.Concat(this.ResultStr, System.Text.Encoding.UTF8.GetString(gattReadResult.Data), Environment.NewLine);
 
             gattWriteResult = await gattCharacteristic.Write(Encoding.UTF8.GetBytes(AppConstants.Manufacturer));
             gattReadResult = await gattCharacteristic.Read();
-            ResultStr = string.Concat(ResultStr, System.Text.Encoding.UTF8.GetString(gattReadResult.Data), Environment.NewLine);
+            this.ResultStr = string.Concat(this.ResultStr, System.Text.Encoding.UTF8.GetString(gattReadResult.Data), Environment.NewLine);
 
             gattWriteResult = await gattCharacteristic.Write(Encoding.UTF8.GetBytes(AppConstants.DeviceName));
             gattReadResult = await gattCharacteristic.Read();
-            ResultStr = string.Concat(ResultStr, System.Text.Encoding.UTF8.GetString(gattReadResult.Data), Environment.NewLine);
+            this.ResultStr = string.Concat(this.ResultStr, System.Text.Encoding.UTF8.GetString(gattReadResult.Data), Environment.NewLine);
 
             _selectedDevice?.CancelConnection();
         }
 
         private async Task SayExactWord(IGattCharacteristic gattCharacteristic)
         {
-            var gattWriteResult = await gattCharacteristic.Write(Encoding.UTF8.GetBytes(WordEntry));
+            var gattWriteResult = await gattCharacteristic.Write(Encoding.UTF8.GetBytes(this.WordEntry));
             var gattReadResult = await gattCharacteristic.Read();
-            ResultStr = string.Concat(ResultStr, System.Text.Encoding.UTF8.GetString(gattReadResult.Data), Environment.NewLine);
+            this.ResultStr = string.Concat(this.ResultStr, System.Text.Encoding.UTF8.GetString(gattReadResult.Data), Environment.NewLine);
+
+            _selectedDevice?.CancelConnection();
         }
 
-        public override void OnNavigatedTo(INavigationParameters parameters)
+        private async Task AskLocation(IGattCharacteristic gattCharacteristic)
+        {
+            var gattReadResult = await gattCharacteristic.Read();
+            string gattResult = Encoding.UTF8.GetString(gattReadResult.Data);
+            this.ResultStr = $"Latitude: {gattResult.Split('|')[0]}{Environment.NewLine}Longitude: {gattResult.Split('|')[1]}";
+
+            _selectedDevice?.CancelConnection();
+        }
+
+        private async Task GetLocationName(IGattCharacteristic gattCharacteristic)
+        {
+            string message = $"{this.Latitude.ToString("N4")}|{this.Longitude.ToString("N4")}";
+            var gattWriteResult = await gattCharacteristic.Write(Encoding.UTF8.GetBytes(message));
+            var gattReadResult = await gattCharacteristic.Read();
+            this.ResultStr = string.Concat(this.ResultStr, System.Text.Encoding.UTF8.GetString(gattReadResult.Data), Environment.NewLine);
+
+            _selectedDevice?.CancelConnection();
+        }
+
+        public override async void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
 
             _selectedDevice = parameters.GetValue<IDevice>(ParameterConstants.SelectedDevice);
-            GattCharacteristic = parameters.GetValue<GattCharacteristicViewModel>(ParameterConstants.SelectedGattCharacteristic);
+            this.GattCharacteristic = parameters.GetValue<GattCharacteristicViewModel>(ParameterConstants.SelectedGattCharacteristic);
 
-            _serviceGuid = GattCharacteristic.ServiceUuid;
-            _characteristicGuid = GattCharacteristic.Characteristic.Uuid;
+            _serviceGuid = this.GattCharacteristic.ServiceUuid;
+            _characteristicGuid = this.GattCharacteristic.Characteristic.Uuid;
 
-            InitializeUI();
+            await InitializeUI();
 
             _selectedDevice
                    .WhenStatusChanged()
@@ -174,10 +215,10 @@ namespace XFBleServerClient.Core.ViewModels
 
                            case ConnectionStatus.Connected:
                                {
-                                   CanExecuteConnectCommand = false;
+                                   this.CanExecuteConnectCommand = false;
                                    //this.ConnectMessage = "Stop";
-                                   DeactivateCharacteristicWith?.Dispose();
-                                   DeactivateCharacteristicWith = new CompositeDisposable();
+                                   this.DeactivateCharacteristicWith?.Dispose();
+                                   this.DeactivateCharacteristicWith = new CompositeDisposable();
                                    _characteristic = null;
                                    await _selectedDevice.DiscoverServices();
                                }
@@ -185,7 +226,7 @@ namespace XFBleServerClient.Core.ViewModels
 
                            case ConnectionStatus.Disconnected:
                                this.ConnectMessage = "Execute";
-                               CanExecuteConnectCommand = true;
+                               this.CanExecuteConnectCommand = true;
                                break;
                        }
                    })
@@ -212,12 +253,21 @@ namespace XFBleServerClient.Core.ViewModels
                 .DisposeWith(this.DeactivateWith);
         }
 
-        private void InitializeUI()
+        private async Task InitializeUI()
         {
-            ShowWordEntry = false;
+            this.ShowWordEntry = false;
+            this.ShowLocationEntry = false;
             if (_characteristicGuid.ToString().ToUpper().Equals(AppConstants.GattCharDefaultServiceSayExactWord.ToUpper()))
             {
-                ShowWordEntry = true;
+                this.ShowWordEntry = true;
+            }
+            else if (_characteristicGuid.ToString().ToUpper().Equals(AppConstants.GattCharLocationTrackingReverseGeocoding.ToUpper()))
+            {
+                var location = await _geolocatorUtil.GetPositionAsync();
+                this.Latitude = location.Latitude;
+                this.Longitude = location.Longitude;
+
+                this.ShowLocationEntry = true;
             }
         }
 

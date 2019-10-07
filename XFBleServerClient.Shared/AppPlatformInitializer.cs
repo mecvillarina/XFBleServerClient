@@ -2,6 +2,8 @@
 using Plugin.BluetoothLE;
 using Plugin.DeviceInfo;
 using Plugin.DeviceInfo.Abstractions;
+using Plugin.Geolocator;
+using Plugin.Geolocator.Abstractions;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using Prism;
@@ -10,6 +12,7 @@ using Prism.Logging;
 using Xamarin.Forms;
 using XFBleServerClient.Core.ViewModels;
 using XFBleServerClient.Core.Views;
+using XFBleServerClient.Managers;
 
 namespace XFBleServerClient.Shared
 {
@@ -51,6 +54,7 @@ namespace XFBleServerClient.Shared
 
 		private void RegisterManagers(IContainerRegistry container)
 		{
+            container.RegisterSingleton<ILocationManager, LocationManager>();
 		}
 
 		private void RegisterRepositories(IContainerRegistry container)
@@ -75,6 +79,7 @@ namespace XFBleServerClient.Shared
 			container.RegisterInstance<IAdapter>(CrossBleAdapter.Current);
 			container.RegisterInstance<IUserDialogs>(UserDialogs.Instance);
             container.RegisterInstance<IDeviceInfo>(CrossDeviceInfo.Current);
+            container.RegisterInstance<IGeolocator>(CrossGeolocator.Current);
 		}
 	}
 }

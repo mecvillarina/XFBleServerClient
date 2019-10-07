@@ -2,6 +2,7 @@
 using Plugin.BluetoothLE;
 using Plugin.BluetoothLE.Server;
 using Plugin.DeviceInfo.Abstractions;
+using Plugin.Geolocator.Abstractions;
 using Prism.Commands;
 using Prism.Navigation;
 using Prism.Services.Dialogs;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 using XFBleServerClient.Core.Common;
 using XFBleServerClient.Core.ItemModels;
 using XFBleServerClient.Core.Providers;
+using XFBleServerClient.Managers;
 
 namespace XFBleServerClient.Core.ViewModels
 {
@@ -23,19 +25,23 @@ namespace XFBleServerClient.Core.ViewModels
         private readonly IDialogService _dialogService;
         private readonly IUserDialogs _userDialogs;
         private readonly IDeviceInfo _deviceInfoUtil;
-        public GattServerSetupPageViewModel(INavigationService navigationService, IAdapter adapter, IDialogService dialogService, IUserDialogs userDialogs, IDeviceInfo deviceInfoUtil) : base(navigationService)
+        private readonly IGeolocator _geolocatorUtil;
+        private readonly ILocationManager _locationManager;
+        public GattServerSetupPageViewModel(INavigationService navigationService, IAdapter adapter, IDialogService dialogService, IUserDialogs userDialogs, IDeviceInfo deviceInfoUtil, IGeolocator geolocatorUtil, ILocationManager locationManager) : base(navigationService)
         {
             _adapter = adapter;
             _dialogService = dialogService;
             _userDialogs = userDialogs;
             _deviceInfoUtil = deviceInfoUtil;
+            _geolocatorUtil = geolocatorUtil;
+            _locationManager = locationManager;
 
             this.BackCommand = new DelegateCommand(async () => await OnBackCommandAsync());
             this.SelectInfoCommand = new DelegateCommand(async () => await ExecuteSelectInfoCommand());
             this.BroadcastCommand = new DelegateCommand(async () => await OnBroadcastCommandAsync(), () => !string.IsNullOrWhiteSpace(this.ServerName)).ObservesProperty(() => this.ServerName);
             this.ServiceSelectionCommand = new DelegateCommand<GattServiceItemModel>(async (item) => await OnServiceSelectionCommand(item));
 
-            DeactivateCharacteristicWith = new CompositeDisposable();
+            this.DeactivateCharacteristicWith = new CompositeDisposable();
         }
 
 
@@ -70,6 +76,7 @@ namespace XFBleServerClient.Core.ViewModels
         }
 
         private string _currentWriteCommand;
+        private string _locationStrRequest;
         protected CompositeDisposable DeactivateCharacteristicWith { get; set; }
 
         public DelegateCommand BackCommand { get; private set; }
@@ -112,7 +119,7 @@ namespace XFBleServerClient.Core.ViewModels
 
             if (_gattServer == null)
             {
-                DeactivateCharacteristicWith = new CompositeDisposable();
+                this.DeactivateCharacteristicWith = new CompositeDisposable();
 
                 var isSuccess = await BuildServer();
 
@@ -136,7 +143,7 @@ namespace XFBleServerClient.Core.ViewModels
         {
             try
             {
-                DeactivateCharacteristicWith?.Dispose();
+                this.DeactivateCharacteristicWith?.Dispose();
                 _adapter.Advertiser.Stop();
                 _gattServer.Dispose();
                 _gattServer = null;
@@ -161,7 +168,7 @@ namespace XFBleServerClient.Core.ViewModels
             {
                 _gattServer = await _adapter.CreateGattServer();
 
-                foreach (var gattServiceItemModel in GattServices)
+                foreach (var gattServiceItemModel in this.GattServices)
                 {
                     var service = _gattServer.CreateService(gattServiceItemModel.ServiceUuid, true);
 
@@ -196,8 +203,8 @@ namespace XFBleServerClient.Core.ViewModels
             {
                 case AppConstants.GattCharDefaultServiceReadDevice: GattCharReadDevice(characteristic); break;
                 case AppConstants.GattCharDefaultServiceSayExactWord: GattCharSayExactWord(characteristic); break;
-                case AppConstants.GattCharLocationTrackingAskMyLocation: break;
-                case AppConstants.GattCharLocationTrackingReverseGeocoding: break;
+                case AppConstants.GattCharLocationTrackingAskMyLocation: GattCharAskLocation(characteristic); break;
+                case AppConstants.GattCharLocationTrackingReverseGeocoding: GattCharReverseGeocoding(characteristic); break;
             }
         }
 
@@ -208,7 +215,7 @@ namespace XFBleServerClient.Core.ViewModels
                 _currentWriteCommand = Encoding.UTF8.GetString(writeRequest.Value);
                 writeRequest.Status = GattStatus.Success;
 
-            }).DisposeWith(DeactivateCharacteristicWith);
+            }).DisposeWith(this.DeactivateCharacteristicWith);
 
             characteristic.WhenReadReceived().Subscribe(readRequest =>
             {
@@ -222,7 +229,7 @@ namespace XFBleServerClient.Core.ViewModels
 
                 readRequest.Status = GattStatus.Success;
 
-            }).DisposeWith(DeactivateCharacteristicWith);
+            }).DisposeWith(this.DeactivateCharacteristicWith);
         }
 
         void GattCharSayExactWord(Plugin.BluetoothLE.Server.IGattCharacteristic characteristic)
@@ -232,14 +239,51 @@ namespace XFBleServerClient.Core.ViewModels
                 _currentWriteCommand = Encoding.UTF8.GetString(writeRequest.Value);
                 writeRequest.Status = GattStatus.Success;
 
-            }).DisposeWith(DeactivateCharacteristicWith);
+            }).DisposeWith(this.DeactivateCharacteristicWith);
 
             characteristic.WhenReadReceived().Subscribe(readRequest =>
             {
                 readRequest.Value = Encoding.UTF8.GetBytes(_currentWriteCommand);
                 readRequest.Status = GattStatus.Success;
 
-            }).DisposeWith(DeactivateCharacteristicWith);
+            }).DisposeWith(this.DeactivateCharacteristicWith);
+        }
+
+        void GattCharAskLocation(Plugin.BluetoothLE.Server.IGattCharacteristic characteristic)
+        {
+            characteristic.WhenReadReceived().Subscribe(readRequest =>
+            {
+                var location = _geolocatorUtil.GetPositionAsync().Result;
+
+                string locationStr = $"{location.Latitude.ToString("N3")}|{location.Longitude.ToString("N3")}";
+
+                readRequest.Value = Encoding.UTF8.GetBytes(locationStr);
+                readRequest.Status = GattStatus.Success;
+
+            }).DisposeWith(this.DeactivateCharacteristicWith);
+        }
+
+        void GattCharReverseGeocoding(Plugin.BluetoothLE.Server.IGattCharacteristic characteristic)
+        {
+            characteristic.WhenWriteReceived().Subscribe(writeRequest =>
+            {
+                _locationStrRequest = Encoding.UTF8.GetString(writeRequest.Value);
+                writeRequest.Status = GattStatus.Success;
+
+            }).DisposeWith(this.DeactivateCharacteristicWith);
+
+            characteristic.WhenReadReceived().Subscribe(readRequest =>
+            {
+                double latitude =  Convert.ToDouble(_locationStrRequest.Split('|')[0]);
+                double longitude = Convert.ToDouble(_locationStrRequest.Split('|')[1]);
+
+                string address = _locationManager.GetLocationAddress(latitude, longitude).Result;
+                address = address.Substring(0, 20);
+
+                readRequest.Value = Encoding.UTF8.GetBytes(address);
+                readRequest.Status = GattStatus.Success;
+
+            }).DisposeWith(this.DeactivateCharacteristicWith);
         }
 
         public override async void OnNavigatedTo(INavigationParameters parameters)
