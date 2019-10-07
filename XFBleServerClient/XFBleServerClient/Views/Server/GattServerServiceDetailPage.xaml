@@ -16,15 +16,15 @@
 
             <Grid Style="{StaticResource NavigationBarStyle}">
                 <Label Grid.Column="0"
-                       Style="{StaticResource NavigationBarTitleFontStyle}"
                        FontFamily="{StaticResource RalewaySemiBoldFontFamily}"
                        HorizontalTextAlignment="Center"
+                       Style="{StaticResource NavigationBarTitleFontStyle}"
                        Text="GATT Server Service Details" />
 
-                <iconize:IconLabel Style="{StaticResource IconLabelMaterialStyle}"
-                                   Margin="0"
+                <iconize:IconLabel Margin="0"
                                    FontSize="{StaticResource IconLabelFontSize}"
                                    HorizontalOptions="StartAndExpand"
+                                   Style="{StaticResource IconLabelMaterialStyle}"
                                    Text="md-keyboard-backspace"
                                    TextColor="{StaticResource Color.PrimaryGray1}">
 
@@ -34,10 +34,10 @@
                 </iconize:IconLabel>
 
 
-                <iconize:IconLabel Style="{StaticResource IconLabelMaterialStyle}"
-                                   Margin="0"
+                <iconize:IconLabel Margin="0"
                                    FontSize="{StaticResource IconLabelFontSize}"
                                    HorizontalOptions="EndAndExpand"
+                                   Style="{StaticResource IconLabelMaterialStyle}"
                                    Text="md-announcement"
                                    TextColor="{StaticResource Color.PrimaryGray1}">
 
@@ -124,11 +124,11 @@
                                                    Text="{Binding Name}"
                                                    TextColor="{StaticResource Color.PrimaryGray1}" />
 
-                                            <Label FontFamily="{StaticResource RalewayLightFontFamily}"
+                                            <!--<Label FontFamily="{StaticResource RalewayLightFontFamily}"
                                                    FontSize="12"
                                                    HorizontalTextAlignment="Start"
                                                    Text="{Binding CharacteristicUuid, Converter={StaticResource GuidStringConverter}}"
-                                                   TextColor="{StaticResource Color.PrimaryGray1}" />
+                                                   TextColor="{StaticResource Color.PrimaryGray1}" />-->
 
                                             <Label FontFamily="{StaticResource RalewayLightFontFamily}"
                                                    FontSize="12"

@@ -15,10 +15,25 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
+            <StackLayout Spacing="16"
+                         VerticalOptions="CenterAndExpand">
+                <Image HeightRequest="100"
+                       HorizontalOptions="CenterAndExpand"
+                       Source="app_icon.png"
+                       WidthRequest="100" />
+
+                <Label FontFamily="{StaticResource RalewaySemiBoldFontFamily}"
+                       FontSize="Title"
+                       HorizontalOptions="CenterAndExpand"
+                       Text="BLE Server-Client"
+                       TextColor="White" />
+            </StackLayout>
+
             <StackLayout Grid.Row="1"
                          Orientation="Vertical"
                          Spacing="12">
                 <Label FontAttributes="Bold"
+                       FontFamily="{StaticResource RalewaySemiBoldFontFamily}"
                        FontSize="16"
                        HorizontalTextAlignment="Center"
                        Text="Connect as"

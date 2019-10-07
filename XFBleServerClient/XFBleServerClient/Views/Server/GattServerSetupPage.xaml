@@ -132,11 +132,11 @@
                                                Text="{Binding Name}"
                                                TextColor="{StaticResource Color.PrimaryGray1}" />
 
-                                        <Label FontFamily="{StaticResource RalewayLightFontFamily}"
+                                        <!--<Label FontFamily="{StaticResource RalewayLightFontFamily}"
                                                FontSize="12"
                                                HorizontalTextAlignment="Start"
                                                Text="{Binding ServiceUuid, Converter={StaticResource GuidStringConverter}}"
-                                               TextColor="{StaticResource Color.PrimaryGray1}" />
+                                               TextColor="{StaticResource Color.PrimaryGray1}" />-->
                                     </StackLayout>
                                 </ViewCell>
                             </DataTemplate>

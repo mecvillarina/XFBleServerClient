@@ -284,6 +284,9 @@
   <ItemGroup>
     <BundleResource Include="Resources\Icon-76.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\app_icon.png" />
+  </ItemGroup>
   <Import Project="..\..\XFBleServerClient.Shared\XFBleServerClient.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>
